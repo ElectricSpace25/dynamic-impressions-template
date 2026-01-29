@@ -1,0 +1,94 @@
+.video-trial-header {
+  text-align: center;
+  padding: 0.25rem;
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+}
+
+.notice-text {
+  color: #555;
+  font-style: italic;
+}
+
+.notice-text--warn {
+  color: red;
+  font-style: normal;
+}
+
+.video-wrapper {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto 1.5rem auto;
+}
+
+.video-wrapper video {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.video-trial-response-area {
+  max-width: 500px;
+  margin: auto;
+}
+
+.word-list {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  min-height: 100px;
+  max-width: 400px;
+  margin: auto;
+  margin-bottom: 1rem;
+}
+
+.word-list .list-group-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+  background-color: #f8f9fa;
+}
+
+.word-list .delete-btn {
+  border: 0px;
+  background-color: #f8f9fa;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.text-input {
+  display: block;
+  width: 100%;
+  max-width: 350px;
+  margin: 0.5rem auto;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.word-entry-form {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  margin-bottom: 1rem;
+}
+
+.word-entry-form .text-input {
+  margin: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: 0;
+  box-sizing: border-box;
+}
+
+.word-entry-form__add-btn {
+  margin: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
