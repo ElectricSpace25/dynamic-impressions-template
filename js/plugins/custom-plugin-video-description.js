@@ -9,12 +9,6 @@ var jsPsychVideoDescription = (function (jspsych) {
                 pretty_name: "Video",
                 default: undefined,
             },
-            show_video_controls: {
-                type: jspsych.ParameterType.BOOL,
-                pretty_name: "Show video controls",
-                default: false, // Default to false for strict control in experiments
-                description: "If true, native video controls (like play/pause bar, fullscreen, context menu) will be visible.",
-            },
             instruction_text: {
                 type: jspsych.ParameterType.HTML_STRING,
                 pretty_name: "Instruction text",
@@ -74,18 +68,14 @@ var jsPsychVideoDescription = (function (jspsych) {
         async trial(display_element, trial) {
             return new Promise((resolve) => {
 
-                // Conditionally add controls and oncontextmenu attributes based on parameter
-                const controls_attr = trial.show_video_controls ? 'controls' : '';
-                const contextmenu_attr = trial.show_video_controls ? '' : 'oncontextmenu="return false;"';
-
-                // --- 1. RENDER THE HTML (Modified for conditional attributes) ---
+                // Set up HTML
                 display_element.innerHTML = `
                 <div class="page-container">
                     <div class="page-header">
                         <h3 id="video-notice" class="notice-text notice-text--warn">${trial.paused_notice_text}</h3>
                     </div>
                     <div class="video-wrapper">
-                        <video id="main-video" ${controls_attr} ${contextmenu_attr}></video>
+                        <video id="main-video" oncontextmenu="return false;"></video>
                     </div>
                     <div class="video-trial-response-area">
                         <div id="desc-sorter" class="word-list"></div>
@@ -99,15 +89,12 @@ var jsPsychVideoDescription = (function (jspsych) {
                     </div>
                 </div>`;
 
-                // --- 2. GET ELEMENTS AND SET UP VIDEO ---
+                // Set up video
                 const video_player = display_element.querySelector('#main-video');
                 video_player.src = `${trial.video}`;
+                video_player.removeAttribute('controls'); //TODO: Is this necessary??
 
-                // Ensure controls are removed if not explicitly requested, even if added by browser defaults
-                if (!trial.show_video_controls) {
-                    video_player.removeAttribute('controls');
-                }
-
+                // Get elements
                 const descript_input = display_element.querySelector('#descript-input');
                 const descript_add_form = display_element.querySelector('#add-descript-form');
                 const descript_submit_btn = display_element.querySelector('#descript-submit');
@@ -119,15 +106,12 @@ var jsPsychVideoDescription = (function (jspsych) {
                 let descriptors_data = [];
                 let current_terms = [];
                 let last_pause_time = -2;
-
-                // Set initial state for input and buttons (they should be available if video starts paused)
-                descript_input.disabled = false;
-                descript_add_form.querySelector('button').disabled = false;
+                let is_disrupted = false;
 
                 // Helper function to update video notice text
                 const updateNotice = (type) => {
                     switch (type) {
-                        case 'default':
+                        case 'playing':
                             video_notice.textContent = trial.default_notice_text;
                             video_notice.className = 'notice-text';
                             break;
@@ -142,18 +126,78 @@ var jsPsychVideoDescription = (function (jspsych) {
                     }
                 };
 
-                // --- 3. EVENT LISTENERS ---
+                const changeState = (state, scroll = false) => {
+                    console.log(state);
+                    switch (state) {
+                        case 'playing':
+                            // Change notice
+                            updateNotice('playing');
 
-                video_player.onerror = () => {
-                    //TODO: update or remove error handlding
-                    video_player.style.display = 'none';
-                    descript_input.disabled = true;
-                    descript_add_form.querySelector('button').disabled = true;
-                    descript_submit_btn.disabled = true;
-                    setTimeout(() => {
-                        resolve({ video: trial.video, descriptors: [] });
-                    }, 3000);
-                };
+                            // Disable input
+                            descript_input.disabled = true;
+                            descript_add_form.querySelector('button').disabled = true;
+                            descript_submit_btn.disabled = true;
+
+                            // Hide instructions
+                            instructions.style.display = 'none';
+
+                            // Play video
+                            video_player.play();
+
+                            // Clicking video pauses
+                            video_player.onclick = () => {
+                                if (is_disrupted) {
+                                    // Don't pause if disrupted
+                                    return;
+                                } else if (video_player.currentTime - last_pause_time <= 2) {  // Paused too early
+                                    // Don't pause if too early
+                                    updateNotice('early');
+                                    // last_pause_time = video_player.currentTime;
+                                    setTimeout(() => {
+                                        updateNotice('playing');
+                                    }, 1500);
+                                    return;
+                                } else {
+                                    // Change to paused state and scroll down
+                                    changeState('paused', true);
+                                }
+                            };
+                            break;
+                        case 'paused':
+                            // Change notice
+                            updateNotice('paused');
+
+                            // Enable input
+                            descript_input.disabled = false;
+                            descript_add_form.querySelector('button').disabled = false;
+
+                            // Show instructions
+                            instructions.style.display = 'block';
+
+                            // Scroll down
+                            if (scroll) {
+                                window.scrollTo({
+                                    top: document.body.scrollHeight,
+                                    behavior: 'smooth'
+                                });
+                            }
+
+                            // Pause video
+                            video_player.pause();
+
+                            // Clicking video scrolls down
+                            video_player.onclick = () => {
+                                window.scrollTo({
+                                    top: document.body.scrollHeight,
+                                    behavior: 'smooth'
+                                });
+                            }
+                            break;
+                    }
+                }
+
+                // Set initial state
+                changeState('paused');
 
                 video_player.onended = () => {
                     const trial_data = {
@@ -162,26 +206,6 @@ var jsPsychVideoDescription = (function (jspsych) {
                     };
                     resolve(trial_data);
                 };
-
-                video_player.onplay = function () {
-
-                };
-
-                video_player.onpause = function () {
-                    updateNotice('paused')
-                    if (video_player.ended) return;
-                    else {
-                        descript_input.disabled = false;
-                        instructions.style.display = 'block';
-                        descript_add_form.querySelector('button').disabled = false;
-                        window.scrollTo({
-                            top: document.body.scrollHeight,
-                            behavior: 'smooth'
-                        });
-                    }
-                };
-
-                let is_disrupted = false;
 
                 video_player.ontimeupdate = () => {
                     if (trial.break_start !== null && trial.break_end !== null) {
@@ -196,6 +220,7 @@ var jsPsychVideoDescription = (function (jspsych) {
                     }
                 };
 
+                // Add words to list
                 descript_add_form.onsubmit = (e) => {
                     e.preventDefault();
                     const new_word = descript_input.value.trim();
@@ -225,6 +250,7 @@ var jsPsychVideoDescription = (function (jspsych) {
                     descript_submit_btn.disabled = false;
                 };
 
+                // Submit words and resume video
                 descript_submit_btn.onclick = () => {
                     const current_timestamp = video_player.currentTime;
                     last_pause_time = current_timestamp;
@@ -237,32 +263,8 @@ var jsPsychVideoDescription = (function (jspsych) {
                         top: 0,
                         behavior: 'smooth'
                     });
-                    descript_input.disabled = true;
-                    descript_add_form.querySelector('button').disabled = true;
-                    descript_submit_btn.disabled = true;
-                    instructions.style.display = 'none';
-                    updateNotice('default');
-                    video_player.play();
+                    changeState('playing');
                 };
-
-                // Video click logic: Only allow pausing if show_video_controls is false
-                if (!trial.show_video_controls) {
-                    video_player.onclick = () => {
-                        if (is_disrupted) {
-                            return;
-                        } else if (!video_player.paused && video_player.currentTime - last_pause_time <= 2) {
-                            updateNotice('early')
-                            last_pause_time = video_player.currentTime;
-                            setTimeout(() => {
-                                updateNotice('default')
-                            }, 1500);
-                        } else {
-                            video_player.play();
-                            video_player.pause();
-                        }
-                    };
-                }
-                // If show_video_controls is true, the native controls and default click behavior will apply.
 
             });
         }
