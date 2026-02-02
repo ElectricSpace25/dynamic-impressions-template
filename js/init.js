@@ -2,12 +2,10 @@ import { config } from './config.js';
 
 const sessionId = Date.now().toString(36) + Math.random().toString(36).substring(2);
 
-// Function to save data to sserver
+// Function to save data to server
 function saveData(id, data) {
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', './php/write_data.php');
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.send(JSON.stringify({ id: id, filedata: data }));
+    var dataToSend = JSON.stringify({ id: id, filedata: data });
+    var success = navigator.sendBeacon('./php/write_data.php', dataToSend);
     if (config.DEBUG_LOGS) console.log("Data saved to data/" + id);
 }
 
