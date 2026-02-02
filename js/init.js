@@ -6,7 +6,7 @@ const sessionId = Date.now().toString(36) + Math.random().toString(36).substring
 function saveData(id, data) {
     var dataToSend = JSON.stringify({ id: id, filedata: data });
     var success = navigator.sendBeacon('./php/write_data.php', dataToSend);
-    if (config.DEBUG_LOGS) console.log("Data saved to data/" + id);
+    if (config.DEBUG_LOGS) console.log("Data saved to data/" + id + ": " + success);
 }
 
 // Initialize jsPsych and export it
