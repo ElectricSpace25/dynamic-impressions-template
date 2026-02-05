@@ -12,12 +12,12 @@ function saveData(id, data) {
 // Initialize jsPsych and export it
 export const jsPsych = initJsPsych({
     on_finish: function () {
-        console.log("Finished")
         if (config.DEBUG_SAVE) {
             jsPsych.data.get().localSave("csv", "data.csv");
         } else {
             saveData(`data-${sessionId}`, jsPsych.data.get().csv());
-            window.location.href = "https://app.prolific.com/submissions/complete?cc=C1HROM6I";
         }
+        jsPsych.abortExperiment(`<p>Thanks for participating!</p>
+                <p><a href="https://app.prolific.co/submissions/complete?cc=C1HROM6I">Click here to return to Prolific and complete the study</a>.</p>`);
     }
 });
