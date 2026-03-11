@@ -1,17 +1,18 @@
 // Imports
-import { config } from './config.js';
+import { config, videoLists } from './config.js';
 import { jsPsych } from './init.js';
 
 import * as utils from './utils.js';
+import { disruptionLookup } from './disruptions.js';
 import { materials } from './materials.js';
 import * as content from './content.js';
 
 // --- Setup and preload videos/audio ---
 
-const {
-    videoTimelineVariables,
-    videoPaths
-} = utils.setupMedia()
+const videoTimelineVariables = utils.setupMedia()
+const videoPaths = videoTimelineVariables.map(t => t.video_path);
+
+console.log(videoTimelineVariables)
 
 const timeline = [];
 timeline.push({
@@ -54,22 +55,22 @@ const audioCheckTrial = {
 
 const videoTrial = {
     type: jsPsychVideoDescription,
-    video: jsPsych.timelineVariable('video'),
+    video: jsPsych.timelineVariable('video_path'),
     show_video_controls: false,
     DEBUG_LOGS: config.DEBUG_LOGS,
     on_start: function (trial) {
         // Parses disruption time if possible
-        const entry = utils.disruptionLookup[trial.video.split('/').pop()];
-        if (entry) {
-            trial.break_start = utils.parseTimeCode(entry.start);
-            trial.break_end = utils.parseTimeCode(entry.end);
-            if (config.DEBUG_LOGS) console.log(`Disruption added: ${trial.break_start} to ${trial.break_end}`);
-        }
+            const entry = disruptionLookup[trial.video.split('/').pop()];
+            if (entry) {
+                trial.break_start = utils.parseTimeCode(entry.start);
+                trial.break_end = utils.parseTimeCode(entry.end);
+                if (config.DEBUG_LOGS) console.log(`Disruption added: ${trial.break_start} to ${trial.break_end}`);
+            }
     },
     data: {
-        // Adds condition and video_id columns to data
-        condition: jsPsych.timelineVariable("condition"),
-        video_id: jsPsych.timelineVariable("video_id")
+        // Adds condition and video_id columns to data if applicable
+        ...(videoLists.length > 1 && {condition: jsPsych.timelineVariable("condition")}),
+        ...(config.ALTERNATE_VIDEOS && {video_id: jsPsych.timelineVariable("video_id")})
     }
 };
 

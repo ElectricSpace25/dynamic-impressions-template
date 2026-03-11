@@ -1,73 +1,53 @@
 import { jsPsych } from './init.js';
-import { config } from './config.js'
+import { config, videoLists } from './config.js';
+import { disruptionLookup } from './disruptions.js';
 
-// Function to build filepaths for videos/audio and create stimuli video list
+// Function to build filepaths for videos and create stimuli video list
 export function setupMedia() {
 
-    // List of base video names
-    const videoBaseIds = [
-        "P3",
-        "P7",
-        "P8",
-        "P9",
-        "P10",
-        "P12",
-        "P13",
-        "P14",
-        "P16",
-        "P18",
-    ];
+    let videoIndices = new Set();
+    let videoTimelineVariables = [];
 
-    // Shuffle and split list
-    const ShuffledIds = jsPsych.randomization.shuffle(videoBaseIds);
-    let controlVideoIds;
-    let disruptedVideoIds;
-    let half = Math.floor(config.num_of_videos / 2);
-    controlVideoIds = ShuffledIds.slice(0, half);
-    disruptedVideoIds = ShuffledIds.slice(half, config.num_of_videos);
-    if (config.DEBUG_LOGS) console.log(`${controlVideoIds.length} control videos, ${disruptedVideoIds.length} disrupted videos`)
+    for(let i = 0; i < videoLists.length; i++) {
+        // Get list
+        const originalList = videoLists[i].videos;
+        let shuffledList = jsPsych.randomization.shuffle(originalList);
+        const selectionNum = videoLists[i].selectionNum;
+        const conditionName = videoLists[i].condition;
 
-    // Create timeline variables (and build filepaths)
-    const controlVideos = controlVideoIds.map(id => ({
-        video: `assets/video/stimuli/${id}.mp4`,
-        condition: 'control',
-        video_id: id
-    }));
+        if (config.ALTERNATE_VIDEOS && videoIndices.size > 0) {
+            shuffledList = shuffledList.filter(video => {
+                const index = originalList.indexOf(video);
+                return !videoIndices.has(index);
+            })
+        }
 
-    const disruptedVideos = disruptedVideoIds.map(id => ({
-        video: `assets/video/stimuli/${id}_split_early.mp4`,
-        condition: 'disrupted',
-        video_id: id
-    }));
+        // Select from list
+        if (config.DEBUG_LOGS) console.log(`Choosing ${selectionNum} ${conditionName} videos`)
+        const chosenVideos = shuffledList.slice(0, selectionNum);
 
-    // Concatenate lists
-    const videoTimelineVariables = jsPsych.randomization.shuffle(
-        [...controlVideos, ...disruptedVideos]
-    );
+        // Add indices to set
+        chosenVideos.forEach(video => {
+            const index = originalList.indexOf(video);
+            videoIndices.add(index);
+        });
 
-    const videoPaths = videoTimelineVariables.map(t => t.video);
+        // Timeline variables
+        const timelineVariables = chosenVideos.map(video => ({
+            video_path: `${config.VIDEO_PATH}/${video}`,
+            video_id: originalList.indexOf(video),
+            condition: conditionName
+        }));
 
-    return {
-        videoTimelineVariables,
-        videoPaths
-    };
+        videoTimelineVariables.push(...timelineVariables);
+    }
+
+    videoTimelineVariables = jsPsych.randomization.shuffle(videoTimelineVariables)
+
+    return videoTimelineVariables;
 }
 
-// Disruption (black screen) times
-export const disruptionLookup = {
-    "P3_split_early.mp4": { start: "00:28:43", end: "00:38:43" },
-    "P7_split_early.mp4": { start: "00:28:06", end: "00:38:06" },
-    "P8_split_early.mp4": { start: "00:34:74", end: "00:44:74" },
-    "P9_split_early.mp4": { start: "00:40:00", end: "00:50:00" },
-    "P10_split_early.mp4": { start: "00:32:66", end: "00:42:66" },
-    "P12_split_early.mp4": { start: "00:40:20", end: "00:50:20" },
-    "P13_split_early.mp4": { start: "00:38:06", end: "00:48:06" },
-    "P14_split_early.mp4": { start: "00:35:18", end: "00:45:18" },
-    "P16_split_early.mp4": { start: "00:36:56", end: "00:46:56" },
-    "P18_split_early.mp4": { start: "00:35:78", end: "00:45:78" }
-};
-
-// Helper function to convert time code to seconds
+// Helper function to convert disruption time code to seconds
 export function parseTimeCode(timeString) {
     if (!timeString) return null;
     const parts = timeString.split(/[:.]/); // Split by colon or dot
