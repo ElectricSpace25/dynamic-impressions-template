@@ -18,9 +18,16 @@ export const config = {
 };
 
 export const videoLists = [
+    // {
+    //     condition: "test",
+    //     selectionNum: 1,
+    //     videos: [
+    //         "Placeholder.mp4"
+    //     ]
+    // },
     {
         condition: "control", // The condition name saved in data (not used if only 1 list)
-        selectionNum: 1, // How many videos to select from this list
+        selectionNum: 5, // How many videos to select from this list
         videos: [
             "P3.mp4",
             "P7.mp4",
