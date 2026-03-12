@@ -1,9 +1,7 @@
 // Imports
-import { config, videoLists } from './config.js';
 import { jsPsych } from './init.js';
-
+import { config, videoLists } from './config.js';
 import * as utils from './utils.js';
-import { materials } from './materials.js';
 import * as content from './content.js';
 
 let disruptionLookup;
@@ -12,12 +10,12 @@ async function loadDisruptions() {
         const module = await import('./disruptions.js');
         disruptionLookup = module.disruptionLookup;
     } catch (error) {
-        if (config.DEBUG_QUICK) console.warn("disruptions.js not found");
+        if (config.DEBUG_LOGS) console.warn("disruptions.js not found");
         disruptionLookup = null;
     }
 }
-
 await loadDisruptions();
+
 
 // --- Setup and preload videos/audio ---
 
@@ -31,6 +29,7 @@ timeline.push({
     message: "Please wait while we load the study.",
 });
 
+
 // --- Screener ---
 
 const screenerTrial = {
@@ -39,6 +38,7 @@ const screenerTrial = {
     on_finish: function (data) {
         if (data.response.english == 'No' || data.response.attention_check != "Other") {
             // Not eligible
+            // TODO: Handle failed screening
             jsPsych.abortExperiment("You did not meet the eligibility requirements.");
         }
     }
