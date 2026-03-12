@@ -12,8 +12,6 @@ import * as content from './content.js';
 const videoTimelineVariables = utils.setupMedia()
 const videoPaths = videoTimelineVariables.map(t => t.video_path);
 
-console.log(videoTimelineVariables)
-
 const timeline = [];
 timeline.push({
     type: jsPsychPreload,

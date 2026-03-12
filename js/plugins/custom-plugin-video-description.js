@@ -127,7 +127,6 @@ var jsPsychVideoDescription = (function (jspsych) {
                 };
 
                 const changeState = (state, scroll = false) => {
-                    console.log(state);
                     switch (state) {
                         case 'playing':
                             // Change notice
