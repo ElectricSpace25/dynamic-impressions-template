@@ -82,7 +82,7 @@ var jsPsychVideoDescription = (function (jspsych) {
                         <h4 id="instructions">${trial.instruction_text}</h4>
                         <h4 id="cannot-add-notice" class="notice-text notice-text--warn" style="display: none;">${trial.cannot_add_notice_text}</h4>
                         <form id="add-descript-form" class="word-entry-form">
-                            <input id="descript-input" type="text" class="text-input" placeholder="e.g. 'happy', 'trustworthy'" autocomplete="off" onkeydown="return /[a-z\-]/i.test(event.key)" disabled>
+                            <input id="descript-input" type="text" class="text-input" placeholder="e.g. 'happy', 'trustworthy'" autocomplete="off" onkeydown="return /[a-z\-]/i.test(event.key)" maxlength="21" disabled>
                             <button id="descript-add" type="submit" class="jspsych-btn word-entry-form__add-btn" disabled>+</button>
                         </form>
                         <button id="descript-submit" class="jspsych-btn" disabled>Submit Word List</button>
