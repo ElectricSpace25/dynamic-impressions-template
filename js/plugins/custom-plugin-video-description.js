@@ -29,9 +29,9 @@ var jsPsychVideoDescription = (function (jspsych) {
                 pretty_name: "Cannot unpause notice text",
                 default: "You cannot unpause until you submit your list of words.",
             },
-            cannot_add_notice_text: {
+            repeat_word_notice_text: {
                 type: jspsych.ParameterType.HTML_STRING,
-                pretty_name: "Cannot add notice text",
+                pretty_name: "Repeat word notice text",
                 default: "You cannot add a word already in the list.",
             },
             video_error_text: {
@@ -70,36 +70,39 @@ var jsPsychVideoDescription = (function (jspsych) {
 
                 // Set up HTML
                 display_element.innerHTML = `
-                <div class="page-container">
-                    <div class="page-header">
-                        <h3 id="video-notice" class="notice-text notice-text--warn">${trial.paused_notice_text}</h3>
-                    </div>
-                    <div class="video-wrapper">
-                        <video id="main-video" oncontextmenu="return false;"></video>
-                    </div>
-                    <div class="video-trial-response-area">
-                        <div id="desc-sorter" class="word-list"></div>
-                        <h4 id="instructions">${trial.instruction_text}</h4>
-                        <h4 id="cannot-add-notice" class="notice-text notice-text--warn" style="display: none;">${trial.cannot_add_notice_text}</h4>
-                        <form id="add-descript-form" class="word-entry-form">
-                            <input id="descript-input" type="text" class="text-input" placeholder="e.g. 'happy', 'trustworthy'" autocomplete="off" onkeydown="return /[a-z\-]/i.test(event.key)" maxlength="21" disabled>
-                            <button id="descript-add" type="submit" class="jspsych-btn word-entry-form__add-btn" disabled>+</button>
-                        </form>
-                        <button id="descript-submit" class="jspsych-btn" disabled>Submit Word List</button>
+                <div class="test">
+                    <div class="trial-container">
+                        <div>
+                            <video class="video-player" oncontextmenu="return false;"></video>
+                            <div>
+                                <h3 id="video-notice" class="notice-text notice-text--warn">${trial.paused_notice_text}</h3>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="word-list">
+                            </div>
+                            <h4 id="instructions">${trial.instruction_text}</h4>
+                            <h4 id="repeat-word-notice" class="notice-text notice-text--warn" style="display: none;">${trial.repeat_word_notice_text}</h4>
+                            <form class="word-entry-form">
+                                <input type="text" class="word-input-box" placeholder="e.g. 'happy', 'trustworthy'" autocomplete="off" onkeydown="return /[a-z\-]/i.test(event.key)" maxlength="21" disabled>
+                                <button type="submit" class="jspsych-btn add-word-btn" disabled>+</button>
+                            </form>
+                            <button id="submit-btn" class="jspsych-btn" disabled>Submit Word List</button>
+                        </div>
                     </div>
                 </div>`;
 
                 // Set up video
-                const videoPlayer = display_element.querySelector('#main-video');
+                const videoPlayer = display_element.querySelector('.video-player');
                 videoPlayer.src = `${trial.video}`;
                 videoPlayer.removeAttribute('controls'); //TODO: Is this necessary??
 
                 // Get elements
-                const descriptInput = display_element.querySelector('#descript-input');
-                const descriptAddForm = display_element.querySelector('#add-descript-form');
-                const descriptSubmitBtn = display_element.querySelector('#descript-submit');
-                const descSorter = display_element.querySelector('#desc-sorter');
-                const cannotAddNotice = display_element.querySelector('#cannot-add-notice');
+                const wordInputBox = display_element.querySelector('.word-input-box');
+                const wordEntryForm = display_element.querySelector('.word-entry-form');
+                const submitBtn = display_element.querySelector('#submit-btn');
+                const wordList = display_element.querySelector('.word-list');
+                const repeatWordNotice = display_element.querySelector('#repeat-word-notice');
                 const videoNotice = display_element.querySelector('#video-notice');
                 const instructions = display_element.querySelector('#instructions')
 
@@ -134,13 +137,13 @@ var jsPsychVideoDescription = (function (jspsych) {
                             updateNotice('playing');
 
                             // Disable input
-                            descriptInput.disabled = true;
-                            descriptAddForm.querySelector('button').disabled = true;
-                            descriptSubmitBtn.disabled = true;
+                            wordInputBox.disabled = true;
+                            wordEntryForm.querySelector('button').disabled = true;
+                            submitBtn.disabled = true;
 
                             // Hide instructions
                             instructions.style.display = 'none';
-                            cannotAddNotice.style.display = 'none';
+                            repeatWordNotice.style.display = 'none';
 
                             // Play video
                             videoPlayer.play();
@@ -169,8 +172,8 @@ var jsPsychVideoDescription = (function (jspsych) {
                             updateNotice('paused');
 
                             // Enable input
-                            descriptInput.disabled = false;
-                            descriptAddForm.querySelector('button').disabled = false;
+                            wordInputBox.disabled = false;
+                            wordEntryForm.querySelector('button').disabled = false;
 
                             // Show instructions
                             instructions.style.display = 'block';
@@ -209,8 +212,8 @@ var jsPsychVideoDescription = (function (jspsych) {
                     instructions.textContent = 'Please add any final words that you feel describe this candidate. You must include at least two.'
 
                     // Enable input
-                    descriptInput.disabled = false;
-                    descriptAddForm.querySelector('button').disabled = false;
+                    wordInputBox.disabled = false;
+                    wordEntryForm.querySelector('button').disabled = false;
                 };
 
                 videoPlayer.ontimeupdate = () => {
@@ -227,18 +230,18 @@ var jsPsychVideoDescription = (function (jspsych) {
                 };
 
                 // Add words to list
-                descriptAddForm.onsubmit = (e) => {
+                wordEntryForm.onsubmit = (e) => {
                     e.preventDefault();
-                    const newWord = descriptInput.value.trim();
+                    const newWord = wordInputBox.value.trim();
                     if (newWord === '') return;
                     if (currentTerms.includes(newWord)) {
-                        cannotAddNotice.style.display = 'block';
+                        repeatWordNotice.style.display = 'block';
                         return;
                     }
-                    cannotAddNotice.style.display = 'none';
+                    repeatWordNotice.style.display = 'none';
                     currentTerms.push(newWord);
                     const listItem = document.createElement('div');
-                    listItem.className = 'list-group-item';
+                    listItem.className = 'word-list-item';
                     listItem.innerText = newWord;
                     const deleteBtn = document.createElement('button');
                     deleteBtn.innerText = 'x';
@@ -247,28 +250,28 @@ var jsPsychVideoDescription = (function (jspsych) {
                         currentTerms = currentTerms.filter(word => word !== newWord);
                         listItem.remove();
                         if (currentTerms.length === 0 || (state === 'final' && currentTerms.length < 2)) {
-                            descriptSubmitBtn.disabled = true;
+                            submitBtn.disabled = true;
                         }
                     };
                     listItem.appendChild(deleteBtn);
-                    descSorter.appendChild(listItem);
-                    descriptInput.value = '';
+                    wordList.appendChild(listItem);
+                    wordInputBox.value = '';
                     if (state === 'final') {
-                        descriptSubmitBtn.disabled = currentTerms.length < 2;
+                        submitBtn.disabled = currentTerms.length < 2;
                     } else {
-                        descriptSubmitBtn.disabled = false;
+                        submitBtn.disabled = false;
                     }
                 };
 
                 // Submit words and resume video
-                descriptSubmitBtn.onclick = () => {
+                submitBtn.onclick = () => {
                     const currentTimestamp = videoPlayer.currentTime;
                     lastPauseTime = currentTimestamp;
                     const newData = currentTerms.map(word => ({ word: word, timestamp: currentTimestamp, state: state}));
                     descriptorsData = descriptorsData.concat(newData);
                     currentTerms = [];
-                    descSorter.innerHTML = '';
-                    descriptInput.value = '';
+                    wordList.innerHTML = '';
+                    wordInputBox.value = '';
                     window.scrollTo({
                         top: 0,
                         behavior: 'smooth'
