@@ -3,9 +3,21 @@ import { config, videoLists } from './config.js';
 import { jsPsych } from './init.js';
 
 import * as utils from './utils.js';
-import { disruptionLookup } from './disruptions.js';
 import { materials } from './materials.js';
 import * as content from './content.js';
+
+let disruptionLookup;
+async function loadDisruptions() {
+    try {
+        const module = await import('./disruptions.js');
+        disruptionLookup = module.disruptionLookup;
+    } catch (error) {
+        if (config.DEBUG_QUICK) console.warn("disruptions.js not found");
+        disruptionLookup = null;
+    }
+}
+
+await loadDisruptions();
 
 // --- Setup and preload videos/audio ---
 
@@ -58,17 +70,19 @@ const videoTrial = {
     DEBUG_LOGS: config.DEBUG_LOGS,
     on_start: function (trial) {
         // Parses disruption time if possible
+        if (disruptionLookup != null) {
             const entry = disruptionLookup[trial.video.split('/').pop()];
             if (entry) {
                 trial.break_start = utils.parseTimeCode(entry.start);
                 trial.break_end = utils.parseTimeCode(entry.end);
                 if (config.DEBUG_LOGS) console.log(`Disruption added: ${trial.break_start} to ${trial.break_end}`);
             }
+        }
     },
     data: {
         // Adds condition and video_id columns to data if applicable
-        ...(videoLists.length > 1 && {condition: jsPsych.timelineVariable("condition")}),
-        ...(config.ALTERNATE_VIDEOS && {video_id: jsPsych.timelineVariable("video_id")})
+        ...(videoLists.length > 1 && { condition: jsPsych.timelineVariable("condition") }),
+        ...(config.ALTERNATE_VIDEOS && { video_id: jsPsych.timelineVariable("video_id") })
     }
 };
 

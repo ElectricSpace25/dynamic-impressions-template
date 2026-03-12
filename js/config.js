@@ -20,7 +20,7 @@ export const config = {
 export const videoLists = [
     {
         condition: "control", // The condition name saved in data (not used if only 1 list)
-        selectionNum: 5, // How many videos to select from this list
+        selectionNum: 1, // How many videos to select from this list
         videos: [
             "P3.mp4",
             "P7.mp4",
@@ -34,20 +34,20 @@ export const videoLists = [
             "P18.mp4"
         ]
     },
-    {
-        condition: "early",
-        selectionNum: 5,
-        videos: [
-            "P3_split_early.mp4",
-            "P7_split_early.mp4",
-            "P8_split_early.mp4",
-            "P9_split_early.mp4",
-            "P10_split_early.mp4",
-            "P12_split_early.mp4",
-            "P13_split_early.mp4",
-            "P14_split_early.mp4",
-            "P16_split_early.mp4",
-            "P18_split_early.mp4",
-        ]
-    },
+    // {
+    //     condition: "early",
+    //     selectionNum: 5,
+    //     videos: [
+    //         "P3_split_early.mp4",
+    //         "P7_split_early.mp4",
+    //         "P8_split_early.mp4",
+    //         "P9_split_early.mp4",
+    //         "P10_split_early.mp4",
+    //         "P12_split_early.mp4",
+    //         "P13_split_early.mp4",
+    //         "P14_split_early.mp4",
+    //         "P16_split_early.mp4",
+    //         "P18_split_early.mp4",
+    //     ]
+    // },
 ];
