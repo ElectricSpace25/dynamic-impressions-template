@@ -84,7 +84,7 @@ var jsPsychVideoDescription = (function (jspsych) {
                             <h4 id="instructions">${trial.instruction_text}</h4>
                             <h4 id="repeat-word-notice" class="notice-text notice-text--warn" style="display: none;">${trial.repeat_word_notice_text}</h4>
                             <form class="word-entry-form">
-                                <input type="text" class="word-input-box" placeholder="e.g. 'happy', 'trustworthy'" autocomplete="off" onkeydown="return /[a-z\-]/i.test(event.key)" maxlength="21" disabled>
+                                <input type="text" class="word-input-box" placeholder="e.g. 'happy', 'trustworthy'" autocomplete="off" onkeydown="return /[a-z\-]/i.test(event.key)" maxlength="19" disabled>
                                 <button type="submit" class="jspsych-btn add-word-btn" disabled>+</button>
                             </form>
                             <button id="submit-btn" class="jspsych-btn" disabled>Submit Word List</button>

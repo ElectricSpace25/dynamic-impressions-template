@@ -31,13 +31,14 @@
 .word-list {
   border: 1px solid #ddd;
   border-radius: 8px;
-  padding: 1rem;
+  padding: 1rem 0.2rem 0rem 1rem;
   min-height: 100px;
   max-width: 400px;
   margin: auto;
   margin-bottom: 1rem;
-  max-height: 190px;
+  max-height: 150px;
   overflow-y: auto;
+  scrollbar-gutter: stable;
 }
 
 .word-list .word-list-item {
