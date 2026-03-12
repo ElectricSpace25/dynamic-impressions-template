@@ -90,38 +90,38 @@ var jsPsychVideoDescription = (function (jspsych) {
                 </div>`;
 
                 // Set up video
-                const video_player = display_element.querySelector('#main-video');
-                video_player.src = `${trial.video}`;
-                video_player.removeAttribute('controls'); //TODO: Is this necessary??
+                const videoPlayer = display_element.querySelector('#main-video');
+                videoPlayer.src = `${trial.video}`;
+                videoPlayer.removeAttribute('controls'); //TODO: Is this necessary??
 
                 // Get elements
-                const descript_input = display_element.querySelector('#descript-input');
-                const descript_add_form = display_element.querySelector('#add-descript-form');
-                const descript_submit_btn = display_element.querySelector('#descript-submit');
-                const desc_sorter = display_element.querySelector('#desc-sorter');
-                const cannot_add_notice = display_element.querySelector('#cannot-add-notice');
-                const video_notice = display_element.querySelector('#video-notice');
+                const descriptInput = display_element.querySelector('#descript-input');
+                const descriptAddForm = display_element.querySelector('#add-descript-form');
+                const descriptSubmitBtn = display_element.querySelector('#descript-submit');
+                const descSorter = display_element.querySelector('#desc-sorter');
+                const cannotAddNotice = display_element.querySelector('#cannot-add-notice');
+                const videoNotice = display_element.querySelector('#video-notice');
                 const instructions = display_element.querySelector('#instructions')
 
-                let descriptors_data = [];
-                let current_terms = [];
-                let last_pause_time = -2;
-                let is_disrupted = false;
+                let descriptorsData = [];
+                let currentTerms = [];
+                let lastPauseTime = -2;
+                let isDisrupted = false;
 
                 // Helper function to update video notice text
                 const updateNotice = (type) => {
                     switch (type) {
                         case 'playing':
-                            video_notice.textContent = trial.default_notice_text;
-                            video_notice.className = 'notice-text';
+                            videoNotice.textContent = trial.default_notice_text;
+                            videoNotice.className = 'notice-text';
                             break;
                         case 'paused':
-                            video_notice.textContent = trial.paused_notice_text;
-                            video_notice.className = 'notice-text notice-text--warn';
+                            videoNotice.textContent = trial.paused_notice_text;
+                            videoNotice.className = 'notice-text notice-text--warn';
                             break;
                         case 'early':
-                            video_notice.textContent = trial.too_early_notice_text;
-                            video_notice.className = 'notice-text notice-text--warn';
+                            videoNotice.textContent = trial.too_early_notice_text;
+                            videoNotice.className = 'notice-text notice-text--warn';
                             break;
                     }
                 };
@@ -133,22 +133,22 @@ var jsPsychVideoDescription = (function (jspsych) {
                             updateNotice('playing');
 
                             // Disable input
-                            descript_input.disabled = true;
-                            descript_add_form.querySelector('button').disabled = true;
-                            descript_submit_btn.disabled = true;
+                            descriptInput.disabled = true;
+                            descriptAddForm.querySelector('button').disabled = true;
+                            descriptSubmitBtn.disabled = true;
 
                             // Hide instructions
                             instructions.style.display = 'none';
 
                             // Play video
-                            video_player.play();
+                            videoPlayer.play();
 
                             // Clicking video pauses
-                            video_player.onclick = () => {
-                                if (is_disrupted) {
+                            videoPlayer.onclick = () => {
+                                if (isDisrupted) {
                                     // Don't pause if disrupted
                                     return;
-                                } else if (video_player.currentTime - last_pause_time <= 2) {  // Paused too early
+                                } else if (videoPlayer.currentTime - lastPauseTime <= 2) {  // Paused too early
                                     // Don't pause if too early
                                     updateNotice('early');
                                     // last_pause_time = video_player.currentTime;
@@ -167,8 +167,8 @@ var jsPsychVideoDescription = (function (jspsych) {
                             updateNotice('paused');
 
                             // Enable input
-                            descript_input.disabled = false;
-                            descript_add_form.querySelector('button').disabled = false;
+                            descriptInput.disabled = false;
+                            descriptAddForm.querySelector('button').disabled = false;
 
                             // Show instructions
                             instructions.style.display = 'block';
@@ -182,10 +182,10 @@ var jsPsychVideoDescription = (function (jspsych) {
                             }
 
                             // Pause video
-                            video_player.pause();
+                            videoPlayer.pause();
 
                             // Clicking video scrolls down
-                            video_player.onclick = () => {
+                            videoPlayer.onclick = () => {
                                 window.scrollTo({
                                     top: document.body.scrollHeight,
                                     behavior: 'smooth'
@@ -198,7 +198,7 @@ var jsPsychVideoDescription = (function (jspsych) {
                 // Set initial state
                 changeState('paused');
 
-                video_player.onended = () => {
+                videoPlayer.onended = () => {                    
                     const trial_data = {
                         video: trial.video,
                         descriptors: descriptors_data
@@ -206,58 +206,58 @@ var jsPsychVideoDescription = (function (jspsych) {
                     resolve(trial_data);
                 };
 
-                video_player.ontimeupdate = () => {
+                videoPlayer.ontimeupdate = () => {
                     if (trial.break_start !== null && trial.break_end !== null) {
-                        const t = video_player.currentTime;
+                        const t = videoPlayer.currentTime;
                         // Check if current time is inside the disruption window
                         if (t >= trial.break_start && t < trial.break_end) {
                             if (trial.debug_logs) console.log("Disruption occuring")
-                            is_disrupted = true;
+                            isDisrupted = true;
                         } else {
-                            is_disrupted = false;
+                            isDisrupted = false;
                         }
                     }
                 };
 
                 // Add words to list
-                descript_add_form.onsubmit = (e) => {
+                descriptAddForm.onsubmit = (e) => {
                     e.preventDefault();
-                    const new_word = descript_input.value.trim();
-                    if (new_word === '') return;
-                    if (current_terms.includes(new_word)) {
-                        cannot_add_notice.style.display = 'block';
+                    const newWord = descriptInput.value.trim();
+                    if (newWord === '') return;
+                    if (currentTerms.includes(newWord)) {
+                        cannotAddNotice.style.display = 'block';
                         return;
                     }
-                    cannot_add_notice.style.display = 'none';
-                    current_terms.push(new_word);
-                    const list_item = document.createElement('div');
-                    list_item.className = 'list-group-item';
-                    list_item.innerText = new_word;
-                    const delete_btn = document.createElement('button');
-                    delete_btn.innerText = 'x';
-                    delete_btn.className = 'delete-btn'
-                    delete_btn.onclick = function () {
-                        current_terms = current_terms.filter(word => word !== new_word);
-                        list_item.remove();
-                        if (current_terms.length === 0) {
-                            descript_submit_btn.disabled = true;
+                    cannotAddNotice.style.display = 'none';
+                    currentTerms.push(newWord);
+                    const listItem = document.createElement('div');
+                    listItem.className = 'list-group-item';
+                    listItem.innerText = newWord;
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.innerText = 'x';
+                    deleteBtn.className = 'delete-btn'
+                    deleteBtn.onclick = function () {
+                        currentTerms = currentTerms.filter(word => word !== newWord);
+                        listItem.remove();
+                        if (currentTerms.length === 0) {
+                            descriptSubmitBtn.disabled = true;
                         }
                     };
-                    list_item.appendChild(delete_btn);
-                    desc_sorter.appendChild(list_item);
-                    descript_input.value = '';
-                    descript_submit_btn.disabled = false;
+                    listItem.appendChild(deleteBtn);
+                    descSorter.appendChild(listItem);
+                    descriptInput.value = '';
+                    descriptSubmitBtn.disabled = false;
                 };
 
                 // Submit words and resume video
-                descript_submit_btn.onclick = () => {
-                    const current_timestamp = video_player.currentTime;
-                    last_pause_time = current_timestamp;
-                    const new_data = current_terms.map(word => ({ word: word, timestamp: current_timestamp }));
-                    descriptors_data = descriptors_data.concat(new_data);
-                    current_terms = [];
-                    desc_sorter.innerHTML = '';
-                    descript_input.value = '';
+                descriptSubmitBtn.onclick = () => {
+                    const currentTimestamp = videoPlayer.currentTime;
+                    lastPauseTime = currentTimestamp;
+                    const newData = currentTerms.map(word => ({ word: word, timestamp: currentTimestamp }));
+                    descriptorsData = descriptorsData.concat(newData);
+                    currentTerms = [];
+                    descSorter.innerHTML = '';
+                    descriptInput.value = '';
                     window.scrollTo({
                         top: 0,
                         behavior: 'smooth'
