@@ -107,8 +107,7 @@ var jsPsychVideoDescription = (function (jspsych) {
                 let currentTerms = [];
                 let lastPauseTime = -2;
                 let isDisrupted = false;
-                let isInitial = true;
-                let isFinal = false;
+                let state = 'initial'; // initial, during, final
 
                 // Helper function to update video notice text
                 const updateNotice = (type) => {
@@ -202,7 +201,7 @@ var jsPsychVideoDescription = (function (jspsych) {
                 changeState('paused');
 
                 videoPlayer.onended = () => {
-                    isFinal = true;
+                    state = 'final';
 
                     videoPlayer.style.display = 'none';
                     videoNotice.style.display = 'none';
@@ -247,14 +246,14 @@ var jsPsychVideoDescription = (function (jspsych) {
                     deleteBtn.onclick = function () {
                         currentTerms = currentTerms.filter(word => word !== newWord);
                         listItem.remove();
-                        if (currentTerms.length === 0 || (isFinal && currentTerms.length < 2)) {
+                        if (currentTerms.length === 0 || (state === 'final' && currentTerms.length < 2)) {
                             descriptSubmitBtn.disabled = true;
                         }
                     };
                     listItem.appendChild(deleteBtn);
                     descSorter.appendChild(listItem);
                     descriptInput.value = '';
-                    if (isFinal) {
+                    if (state === 'final') {
                         descriptSubmitBtn.disabled = currentTerms.length < 2;
                     } else {
                         descriptSubmitBtn.disabled = false;
@@ -265,7 +264,7 @@ var jsPsychVideoDescription = (function (jspsych) {
                 descriptSubmitBtn.onclick = () => {
                     const currentTimestamp = videoPlayer.currentTime;
                     lastPauseTime = currentTimestamp;
-                    const newData = currentTerms.map(word => ({ word: word, timestamp: currentTimestamp, is_initial: isInitial, is_final: isFinal}));
+                    const newData = currentTerms.map(word => ({ word: word, timestamp: currentTimestamp, state: state}));
                     descriptorsData = descriptorsData.concat(newData);
                     currentTerms = [];
                     descSorter.innerHTML = '';
@@ -274,10 +273,10 @@ var jsPsychVideoDescription = (function (jspsych) {
                         top: 0,
                         behavior: 'smooth'
                     });
-                    if (isInitial) {
-                        isInitial = false;
+                    if (state === 'initial') {
+                        state = 'during';
                     }
-                    if (isFinal) {
+                    if (state === 'final') {
                         console.log("by bye")
                         const trial_data = {
                             video: trial.video,
