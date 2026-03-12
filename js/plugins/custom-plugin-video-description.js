@@ -107,6 +107,8 @@ var jsPsychVideoDescription = (function (jspsych) {
                 let currentTerms = [];
                 let lastPauseTime = -2;
                 let isDisrupted = false;
+                let isInitial = true;
+                let isFinal = false;
 
                 // Helper function to update video notice text
                 const updateNotice = (type) => {
@@ -139,6 +141,7 @@ var jsPsychVideoDescription = (function (jspsych) {
 
                             // Hide instructions
                             instructions.style.display = 'none';
+                            cannotAddNotice.style.display = 'none';
 
                             // Play video
                             videoPlayer.play();
@@ -198,12 +201,17 @@ var jsPsychVideoDescription = (function (jspsych) {
                 // Set initial state
                 changeState('paused');
 
-                videoPlayer.onended = () => {                    
-                    const trial_data = {
-                        video: trial.video,
-                        descriptors: descriptors_data
-                    };
-                    resolve(trial_data);
+                videoPlayer.onended = () => {
+                    isFinal = true;
+
+                    videoPlayer.style.display = 'none';
+                    videoNotice.style.display = 'none';
+                    instructions.style.display = 'block';
+                    instructions.textContent = 'Please add any final words that you feel describe this candidate. You must include at least two.'
+
+                    // Enable input
+                    descriptInput.disabled = false;
+                    descriptAddForm.querySelector('button').disabled = false;
                 };
 
                 videoPlayer.ontimeupdate = () => {
@@ -239,21 +247,25 @@ var jsPsychVideoDescription = (function (jspsych) {
                     deleteBtn.onclick = function () {
                         currentTerms = currentTerms.filter(word => word !== newWord);
                         listItem.remove();
-                        if (currentTerms.length === 0) {
+                        if (currentTerms.length === 0 || (isFinal && currentTerms.length < 2)) {
                             descriptSubmitBtn.disabled = true;
                         }
                     };
                     listItem.appendChild(deleteBtn);
                     descSorter.appendChild(listItem);
                     descriptInput.value = '';
-                    descriptSubmitBtn.disabled = false;
+                    if (isFinal) {
+                        descriptSubmitBtn.disabled = currentTerms.length < 2;
+                    } else {
+                        descriptSubmitBtn.disabled = false;
+                    }
                 };
 
                 // Submit words and resume video
                 descriptSubmitBtn.onclick = () => {
                     const currentTimestamp = videoPlayer.currentTime;
                     lastPauseTime = currentTimestamp;
-                    const newData = currentTerms.map(word => ({ word: word, timestamp: currentTimestamp }));
+                    const newData = currentTerms.map(word => ({ word: word, timestamp: currentTimestamp, is_initial: isInitial, is_final: isFinal}));
                     descriptorsData = descriptorsData.concat(newData);
                     currentTerms = [];
                     descSorter.innerHTML = '';
@@ -262,7 +274,19 @@ var jsPsychVideoDescription = (function (jspsych) {
                         top: 0,
                         behavior: 'smooth'
                     });
-                    changeState('playing');
+                    if (isInitial) {
+                        isInitial = false;
+                    }
+                    if (isFinal) {
+                        console.log("by bye")
+                        const trial_data = {
+                            video: trial.video,
+                            descriptors: descriptorsData
+                        };
+                        resolve(trial_data);
+                    } else {
+                        changeState('playing');
+                    }
                 };
 
             });

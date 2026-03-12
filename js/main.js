@@ -87,64 +87,6 @@ const videoTrial = {
 };
 
 
-// --- Final impression trial ---
-
-const finalImpressionTrial = {
-    type: jsPsychHtmlKeyboardResponse,
-    stimulus: materials.finalImpression,
-    choices: "NO_KEYS",
-    on_load: function () {
-        const sorter = document.getElementById('final-sorter');
-        const addForm = document.getElementById('final-descript-form');
-        const input = document.getElementById('final-descript-input');
-        const submitBtn = document.getElementById('final-submit');
-        const notice = document.getElementById('final-cannot-add-notice');
-        let finalTerms = [];
-
-        function renderList() {
-            sorter.innerHTML = '';
-            finalTerms.forEach(word => {
-                const listItem = document.createElement('div');
-                listItem.className = 'list-group-item';
-                listItem.innerText = word;
-                const deleteBtn = document.createElement('button');
-                deleteBtn.innerText = "x";
-                deleteBtn.className = 'delete-btn'
-                deleteBtn.onclick = function () {
-                    finalTerms = finalTerms.filter(t => t !== word);
-                    renderList();
-                };
-                listItem.appendChild(deleteBtn);
-                sorter.appendChild(listItem);
-            });
-            submitBtn.disabled = finalTerms.length < 2;
-        }
-
-        addForm.onsubmit = function (e) {
-            e.preventDefault();
-            const newWord = input.value.trim();
-            if (newWord === '') return;
-            if (finalTerms.includes(newWord)) {
-                notice.style.display = 'block';
-                return;
-            }
-            notice.style.display = 'none';
-            finalTerms.push(newWord);
-            input.value = '';
-            renderList();
-        };
-
-        submitBtn.onclick = function () {
-            jsPsych.finishTrial({
-                final_descriptors: finalTerms,
-            });
-        };
-
-        renderList();
-    },
-};
-
-
 // --- Rating and decision ---
 
 const ratingTrial = {
@@ -183,7 +125,6 @@ if (!config.DEBUG_QUICK) timeline.push(screenerTrial, instructionsTrial, audioCh
 const videoTimeline = {
     timeline: [
         videoTrial,
-        finalImpressionTrial,
         ratingTrial,
         decisionTrial
     ],
