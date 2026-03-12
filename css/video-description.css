@@ -1,9 +1,9 @@
 /* Overrides jspsych's flex display to prevent margins shrinking when word list too long */
-.jspsych-content-wrapper:has(.test) {
+.jspsych-content-wrapper:has(.trial-container) {
   display: block;
 }
 
-.trial-container {
+.trial-subcontainer {
   display: grid;
   grid-template-columns: 640px 500px;
   justify-content: center; 

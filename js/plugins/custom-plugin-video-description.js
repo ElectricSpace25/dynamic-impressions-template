@@ -70,8 +70,8 @@ var jsPsychVideoDescription = (function (jspsych) {
 
                 // Set up HTML
                 display_element.innerHTML = `
-                <div class="test">
-                    <div class="trial-container">
+                <div class="trial-container">
+                    <div class="trial-subcontainer">
                         <div>
                             <video class="video-player" oncontextmenu="return false;"></video>
                             <div>
