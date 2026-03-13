@@ -192,6 +192,7 @@ const traitSliders = traits.map(trait => ({
     min: 0,
     max: 10,
     defaultValue: 5,
+    tooltipVisibility: "never",
     customLabels: [
         {
             value: 0,
