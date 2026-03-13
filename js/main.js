@@ -65,13 +65,15 @@ const audioCheckTrial = {
 
 const videoTrial = {
     type: jsPsychVideoDescription,
-    video: jsPsych.timelineVariable('video_path'),
-    show_video_controls: false,
-    DEBUG_LOGS: config.DEBUG_LOGS,
+    video_path: jsPsych.timelineVariable('video_path'),
+    video_name: jsPsych.timelineVariable('video_name'),
+    video_id: jsPsych.timelineVariable('video_id'),
+    condition: jsPsych.timelineVariable('condition'),
+    debug_logs: config.DEBUG_LOGS,
     on_start: function (trial) {
         // Parses disruption time if possible
         if (disruptionLookup != null) {
-            const entry = disruptionLookup[trial.video.split('/').pop()];
+            const entry = disruptionLookup[trial.video_name.split('/').pop()];
             if (entry) {
                 trial.break_start = utils.parseTimeCode(entry.start);
                 trial.break_end = utils.parseTimeCode(entry.end);

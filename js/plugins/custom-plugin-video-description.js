@@ -3,40 +3,56 @@ var jsPsychVideoDescription = (function (jspsych) {
 
     const info = {
         name: "video-description-trial",
+        version: 1.0,
         parameters: {
-            video: {
+            video_path: {
                 type: jspsych.ParameterType.VIDEO,
                 pretty_name: "Video",
                 default: undefined,
             },
+            video_name: {
+                type: jspsych.ParameterType.STRING,
+                pretty_name: "Video Name",
+                default: null,
+            },
+            video_id: {
+                type: jspsych.ParameterType.INT,
+                pretty_name: "Video ID",
+                default: null,
+            },
+            condition: {
+                type: jspsych.ParameterType.STRING,
+                pretty_name: "Condition",
+                default: null,
+            },
             instruction_text: {
                 type: jspsych.ParameterType.HTML_STRING,
-                pretty_name: "Instruction text",
+                pretty_name: "Instruction Text",
                 default: "Enter one word at a time, using as many words as would be helpful.",
             },
             default_notice_text: {
                 type: jspsych.ParameterType.HTML_STRING,
-                pretty_name: "Pause notice text",
+                pretty_name: "Pause Notice Text",
                 default: "Click anywhere on the video to pause and make an entry.",
             },
             too_early_notice_text: {
                 type: jspsych.ParameterType.HTML_STRING,
-                pretty_name: "Too early notice text",
+                pretty_name: "Too Early Notice Text",
                 default: "Please wait slightly longer before pausing again.",
             },
             paused_notice_text: {
                 type: jspsych.ParameterType.HTML_STRING,
-                pretty_name: "Cannot unpause notice text",
+                pretty_name: "Cannot Unpause Notice Text",
                 default: "You cannot unpause until you submit your list of words.",
             },
             repeat_word_notice_text: {
                 type: jspsych.ParameterType.HTML_STRING,
-                pretty_name: "Repeat word notice text",
+                pretty_name: "Repeat Word Notice Text",
                 default: "You cannot add a word already in the list.",
             },
             video_error_text: {
                 type: jspsych.ParameterType.HTML_STRING,
-                pretty_name: "Video error text",
+                pretty_name: "Video Error Text",
                 default: "<p>Error: Could not load video. Please inform the experimenter.</p>",
             },
             break_start: {
@@ -58,6 +74,48 @@ var jsPsychVideoDescription = (function (jspsych) {
                 description: "If true, display prints useful for debugging"
             }
         },
+        data: {
+            response: {
+                type: jspsych.ParameterType.COMPLEX,
+                array: true,
+                nested: {
+                    /* The word entered */
+                    word: {
+                        type: jspsych.ParameterType.STRING
+                    },
+                    /* The timestamp of the video when the word was entered */
+                    timestamp: {
+                        type: jspsych.ParameterType.FLOAT
+                    },
+                    /* When the word was entered
+                       - 'inital' - before playing the video
+                       - 'during' - during the video
+                       - 'final' - after the video ended */
+                    response_state: {
+                        type: jspsych.ParameterType.STRING
+                    },
+                    /* The name of the video played.
+                       Will be video_path if video_name was not provided */
+                    video: {
+                        type: jspsych.ParameterType.STRING
+                    },
+                    /* The index of the video in the order given before shuffling.
+                       Will be null if video_id not provided */
+                    video_id: {
+                        type: jspsych.ParameterType.STRING
+                    },
+                    /* The condition the video is assigned to.
+                       Will be null if condition not provided */
+                    condition: {
+                        type: jspsych.ParameterType.STRING
+                    },
+                }
+            },
+            /* The response time in milliseconds for the participant to complete the trial */
+            rt: {
+                type: jspsych.ParameterType.INT
+            }
+        }
     };
 
     class VideoDescriptionPlugin {
@@ -67,6 +125,7 @@ var jsPsychVideoDescription = (function (jspsych) {
 
         async trial(display_element, trial) {
             return new Promise((resolve) => {
+                var startTime = performance.now();
 
                 // Set up HTML
                 display_element.innerHTML = `
@@ -94,7 +153,7 @@ var jsPsychVideoDescription = (function (jspsych) {
 
                 // Set up video
                 const videoPlayer = display_element.querySelector('.video-player');
-                videoPlayer.src = `${trial.video}`;
+                videoPlayer.src = `${trial.video_path}`;
                 videoPlayer.removeAttribute('controls'); //TODO: Is this necessary??
 
                 // Get elements
@@ -203,6 +262,7 @@ var jsPsychVideoDescription = (function (jspsych) {
                 // Set initial state
                 changeState('paused');
 
+                // On video end, hide video and request final 2+ words
                 videoPlayer.onended = () => {
                     response_state = 'final';
 
@@ -267,7 +327,14 @@ var jsPsychVideoDescription = (function (jspsych) {
                 submitBtn.onclick = () => {
                     const currentTimestamp = videoPlayer.currentTime;
                     lastPauseTime = currentTimestamp;
-                    const newData = currentTerms.map(word => ({ word: word, timestamp: currentTimestamp, response_state: response_state}));
+                    const newData = currentTerms.map(word => ({ 
+                        word: word, 
+                        timestamp: currentTimestamp, 
+                        response_state: response_state,
+                        video: trial.video_name ?? trial.video_path,
+                        video_id: trial.video_id,
+                        condition: trial.condition
+                        }));
                     descriptorsData = descriptorsData.concat(newData);
                     currentTerms = [];
                     wordList.innerHTML = '';
@@ -280,10 +347,11 @@ var jsPsychVideoDescription = (function (jspsych) {
                         response_state = 'during';
                     }
                     if (response_state === 'final') {
-                        console.log("by bye")
+                        // End the trial
+                        let rt = Math.round(performance.now() - startTime);
                         const trial_data = {
-                            video: trial.video,
-                            descriptors: descriptorsData
+                            response: descriptorsData,
+                            rt: rt
                         };
                         resolve(trial_data);
                     } else {
