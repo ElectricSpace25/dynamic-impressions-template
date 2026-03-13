@@ -195,11 +195,22 @@ const traitSliders = traits.map(trait => ({
     customLabels: [
         {
             value: 0,
-            text: "Least"
+            text: "Least",
+            showValue: true
         },
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
         {
             value: 10,
-            text: "Most"
+            text: "Most",
+            showValue: true
         }
     ]
 }));
