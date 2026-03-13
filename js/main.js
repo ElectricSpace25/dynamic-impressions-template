@@ -80,11 +80,6 @@ const videoTrial = {
                 if (config.DEBUG_LOGS) console.log(`Disruption added: ${trial.break_start} to ${trial.break_end}`);
             }
         }
-    },
-    data: {
-        // Adds condition and video_id columns to data if applicable
-        ...(videoLists.length > 1 && { condition: jsPsych.timelineVariable("condition") }),
-        ...(config.ALTERNATE_VIDEOS && { video_id: jsPsych.timelineVariable("video_id") })
     }
 };
 
