@@ -1,0 +1,6 @@
+:root {
+    /* Remove slider progression color */
+    --sjs-postcss-fix-slider-path-color-filled: #d9d9d9;
+    --sjs-postcss-fix-slider-path-color: #d9d9d9;
+
+}
