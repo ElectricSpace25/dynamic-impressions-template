@@ -315,6 +315,7 @@ var jsPsychVideoDescription = (function (jspsych) {
                     };
                     listItem.appendChild(deleteBtn);
                     wordList.appendChild(listItem);
+                    wordList.scrollTop = wordList.scrollHeight;
                     wordInputBox.value = '';
                     if (response_state === 'final') {
                         submitBtn.disabled = currentTerms.length < 2;
