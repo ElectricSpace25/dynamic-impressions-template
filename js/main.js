@@ -21,6 +21,10 @@ await loadDisruptions();
 
 const videoTimelineVariables = utils.setupMedia()
 const videoPaths = videoTimelineVariables.map(t => t.video_path);
+if (config.DEBUG_LOGS) {
+    console.log('Final video timeline variables:')
+    console.log(videoTimelineVariables);
+}
 
 const timeline = [];
 timeline.push({

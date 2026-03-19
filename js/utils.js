@@ -3,14 +3,16 @@ import { config, videoLists } from './config.js';
 
 // Function to build filepaths for videos and create stimuli video list
 export function setupMedia() {
+    if (config.DEBUG_LOGS) console.log("Setting up videos");
+    if (config.DEBUG_LOGS) console.log(`Alternate mode: ${config.ALTERNATE_VIDEOS}`);
 
     let videoIndices = new Set();
-    let videoTimelineVariables = [];
+    let videoTimelineVariableLists = [];
 
     for(let i = 0; i < videoLists.length; i++) {
-        // Get list
         const originalList = videoLists[i].videos;
-        let shuffledList = jsPsych.randomization.shuffle(originalList);
+        let shuffledList = originalList;
+        if (videoLists[i].shuffle) shuffledList = jsPsych.randomization.shuffle(originalList);
         const selectionNum = videoLists[i].selectionNum;
         const conditionName = videoLists[i].condition;
 
@@ -22,7 +24,6 @@ export function setupMedia() {
         }
 
         // Select from list
-        if (config.DEBUG_LOGS) console.log(`Choosing ${selectionNum} ${conditionName} videos`)
         const chosenVideos = shuffledList.slice(0, selectionNum);
 
         // Add indices to set
@@ -39,12 +40,24 @@ export function setupMedia() {
             condition: conditionName
         }));
 
-        videoTimelineVariables.push(...timelineVariables);
+        // Add to list
+        videoTimelineVariableLists.push(timelineVariables);
+
+        // Debug printing
+        if (config.DEBUG_LOGS) console.log(`List ${i}: ${conditionName}`);
+        if (config.DEBUG_LOGS) console.log(`Original: ${originalList}`);
+        if (config.DEBUG_LOGS && videoLists[i].shuffle) console.log(`Shuffled: ${shuffledList}`);
+        if (config.DEBUG_LOGS) console.log(`Choosing ${selectionNum} videos:`);
+        if (config.DEBUG_LOGS) console.log(timelineVariables);
     }
 
-    videoTimelineVariables = jsPsych.randomization.shuffle(videoTimelineVariables)
-
-    return videoTimelineVariables;
+    if (config.SHUFFLE_ALL) {
+        return jsPsych.randomization.shuffle(videoTimelineVariableLists.flat());
+    } else if (config.SHUFFLE_LIST_ORDER) {
+        return jsPsych.randomization.shuffle(videoTimelineVariableLists).flat();
+    } else {
+        return videoTimelineVariableLists.flat();
+    }
 }
 
 // Helper function to convert disruption time code to seconds
