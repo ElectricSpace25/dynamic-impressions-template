@@ -188,7 +188,34 @@ var jsPsychVideoDescription = (function (jspsych) {
                     }
                 };
 
-                const changeState = (state, scroll = false) => {
+                // Spacebar listener to al
+                const spacebarListener = (event) => {
+                    if (event.code === 'Space') {
+                        event.preventDefault();
+                        if (document.activeElement.tagName === 'INPUT') return;
+                        pauseVideo();
+                    }
+                };
+
+                const pauseVideo = () => {
+                    if (isDisrupted) {
+                        // Don't pause if disrupted
+                        return;
+                    } else if (videoPlayer.currentTime - lastPauseTime <= 2) {
+                        // Don't pause if too early
+                        updateNotice('early');
+                        // last_pause_time = video_player.currentTime;
+                        setTimeout(() => {
+                            updateNotice('playing');
+                        }, 1500);
+                        return;
+                    } else {
+                        // Change to paused state
+                        changeState('paused');
+                    }
+                };
+
+                const changeState = (state) => {
                     switch (state) {
                         case 'playing':
                             // Change notice
@@ -203,57 +230,35 @@ var jsPsychVideoDescription = (function (jspsych) {
                             instructions.style.display = 'none';
                             repeatWordNotice.style.display = 'none';
 
-                            // Play video
+                            // Play video and set cursor to pointer
                             videoPlayer.play();
+                            videoPlayer.style.cursor = 'pointer';
 
-                            // Clicking video pauses
-                            videoPlayer.onclick = () => {
-                                if (isDisrupted) {
-                                    // Don't pause if disrupted
-                                    return;
-                                } else if (videoPlayer.currentTime - lastPauseTime <= 2) {  // Paused too early
-                                    // Don't pause if too early
-                                    updateNotice('early');
-                                    // last_pause_time = video_player.currentTime;
-                                    setTimeout(() => {
-                                        updateNotice('playing');
-                                    }, 1500);
-                                    return;
-                                } else {
-                                    // Change to paused state and scroll down
-                                    changeState('paused', true);
-                                }
-                            };
+                            // Clicking video or pressing spacebar pauses
+                            videoPlayer.onclick = () => { pauseVideo(); };
+                            window.addEventListener('keydown', spacebarListener);
+
                             break;
                         case 'paused':
                             // Change notice
                             updateNotice('paused');
 
-                            // Enable input
+                            // Enable and focus input
                             wordInputBox.disabled = false;
                             wordEntryForm.querySelector('button').disabled = false;
+                            wordInputBox.focus();
 
                             // Show instructions
                             instructions.style.display = 'block';
 
-                            // Scroll down
-                            if (scroll) {
-                                window.scrollTo({
-                                    top: document.body.scrollHeight,
-                                    behavior: 'smooth'
-                                });
-                            }
-
-                            // Pause video
+                            // Pause video and set cursor to not allowed
                             videoPlayer.pause();
+                            videoPlayer.style.cursor = 'not-allowed';
 
-                            // Clicking video scrolls down
-                            videoPlayer.onclick = () => {
-                                window.scrollTo({
-                                    top: document.body.scrollHeight,
-                                    behavior: 'smooth'
-                                });
-                            }
+                            // Clicking video or pressing spacebar does nothing
+                            videoPlayer.onclick = null;
+                            window.removeEventListener('keydown', spacebarListener);
+
                             break;
                     }
                 }
@@ -328,22 +333,18 @@ var jsPsychVideoDescription = (function (jspsych) {
                 submitBtn.onclick = () => {
                     const currentTimestamp = videoPlayer.currentTime;
                     lastPauseTime = currentTimestamp;
-                    const newData = currentTerms.map(word => ({ 
-                        word: word, 
-                        timestamp: currentTimestamp, 
+                    const newData = currentTerms.map(word => ({
+                        word: word,
+                        timestamp: currentTimestamp,
                         response_state: response_state,
                         video: trial.video_name ?? trial.video_path,
                         video_id: trial.video_id,
                         condition: trial.condition
-                        }));
+                    }));
                     descriptorsData = descriptorsData.concat(newData);
                     currentTerms = [];
                     wordList.innerHTML = '';
                     wordInputBox.value = '';
-                    window.scrollTo({
-                        top: 0,
-                        behavior: 'smooth'
-                    });
                     if (response_state === 'initial') {
                         response_state = 'during';
                     }
