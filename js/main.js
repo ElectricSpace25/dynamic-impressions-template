@@ -1,6 +1,6 @@
 // Imports
 import { jsPsych } from './init.js';
-import { config, videoLists } from './config.js';
+import { config} from './config.js';
 import * as utils from './utils.js';
 import * as content from './content.js';
 
@@ -61,6 +61,36 @@ const audioCheckTrial = {
 };
 
 
+// --- Fullscreen ---
+
+const fullscreen = {
+    type: jsPsychFullscreen,
+    fullscreen_mode: true,
+    message: `<p>The experiment will switch to full screen mode when you press the button below.</p>
+              <p>Do not exit fullscreen until the study is complete.<p>`
+}
+
+function checkFullscreen(){
+    var reFullscreen = {
+        type: jsPsychFullscreen,
+        fullscreen_mode: true,
+        message: `<p>Please do not exit fullscreen mode.</p><p>Click the button below to return to fullscreen mode.</p>`
+    };
+    
+    var fullscreenNode = {
+        timeline: [reFullscreen],
+        conditional_function: function(){
+            if(!document.fullscreenElement){
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+    return fullscreenNode;
+}
+
+
 // --- Video trial ---
 
 const videoTrial = {
@@ -117,10 +147,11 @@ const finishedTrial = {
 
 // --- Main timeline ---
 
-if (!config.DEBUG_QUICK) timeline.push(screenerTrial, instructionsTrial, audioCheckTrial);
+if (!config.DEBUG_QUICK) timeline.push(screenerTrial, instructionsTrial, audioCheckTrial, fullscreen);
 
 const videoTimeline = {
     timeline: [
+        checkFullscreen(),
         videoTrial,
         ratingTrial,
         decisionTrial
