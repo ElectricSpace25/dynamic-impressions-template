@@ -65,7 +65,7 @@ export const instructionsContent = {
                     type: 'html',
                     html: `
                         <video width="100%" autoplay loop muted src="assets/video/instruct/submitting.mp4"></video>
-                        <p>Pause the video whenever you <b>notice a new characteristic</b> about the person or think of a <b>new way to describe them.</b> Pause by clicking anywhere on the video.</p>
+                        <p>Pause the video whenever you <b>notice a new characteristic</b> about the person or think of a <b>new way to describe them.</b> Pause by clicking anywhere on the video or pressing the spacebar.</p>
                         <p><b>Enter one word at a time</b>, but you can enter multiple words each time you pause (see video). For example, if you feel like the person is being an annoying student, pause and enter “annoying” and “student” separately. Order does not matter.</p>
                         <p>Enter whatever comes to mind spontaneously. There are no limits on what you enter! We only ask that you <b>pause and describe the person multiple times.</b></p>
                         <p>Based on past experience, <b>we expect you will pause 2-5 times per video.</b> Please note there is a minimum amount of time that needs to pass between each time you pause the video (2 seconds).</p>
