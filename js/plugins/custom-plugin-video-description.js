@@ -130,24 +130,22 @@ var jsPsychVideoDescription = (function (jspsych) {
                 // Set up HTML
                 display_element.innerHTML = `
                 <div class="trial-container">
-                    <div class="trial-subcontainer">
+                    <div>
+                        <video class="video-player" oncontextmenu="return false;"></video>
                         <div>
-                            <video class="video-player" oncontextmenu="return false;"></video>
-                            <div>
-                                <h3 id="video-notice" class="notice-text notice-text--warn">${trial.paused_notice_text}</h3>
-                            </div>
+                            <h3 id="video-notice" class="notice-text notice-text--warn">${trial.paused_notice_text}</h3>
                         </div>
-                        <div>
-                            <div class="word-list">
-                            </div>
-                            <h4 id="instructions">${trial.instruction_text}</h4>
-                            <h4 id="repeat-word-notice" class="notice-text notice-text--warn" style="display: none;">${trial.repeat_word_notice_text}</h4>
-                            <form class="word-entry-form">
-                                <input type="text" class="word-input-box" placeholder="e.g. 'happy', 'trustworthy'" autocomplete="off" onkeydown="return /[a-z\-]/i.test(event.key)" maxlength="19" disabled>
-                                <button type="submit" class="jspsych-btn add-word-btn" disabled>+</button>
-                            </form>
-                            <button id="submit-btn" class="jspsych-btn" disabled>Submit Word List</button>
+                    </div>
+                    <div>
+                        <div class="word-list">
                         </div>
+                        <h4 id="instructions">${trial.instruction_text}</h4>
+                        <h4 id="repeat-word-notice" class="notice-text notice-text--warn" style="display: none;">${trial.repeat_word_notice_text}</h4>
+                        <form class="word-entry-form">
+                            <input type="text" class="word-input-box" placeholder="e.g. 'happy', 'trustworthy'" autocomplete="off" onkeydown="return /[a-z\-]/i.test(event.key)" maxlength="19" disabled>
+                            <button type="submit" class="jspsych-btn add-word-btn" disabled>+</button>
+                        </form>
+                        <button id="submit-btn" class="jspsych-btn" disabled>Submit Word List</button>
                     </div>
                 </div>`;
 
@@ -157,6 +155,7 @@ var jsPsychVideoDescription = (function (jspsych) {
                 videoPlayer.removeAttribute('controls'); //TODO: Is this necessary??
 
                 // Get elements
+                const trialContainer = document.querySelector('.trial-container');
                 const wordInputBox = display_element.querySelector('.word-input-box');
                 const wordEntryForm = display_element.querySelector('.word-entry-form');
                 const submitBtn = display_element.querySelector('#submit-btn');
@@ -272,6 +271,7 @@ var jsPsychVideoDescription = (function (jspsych) {
                     instructions.textContent = 'Please add any final words that you feel describe this candidate. You must include at least two.'
 
                     // Enable input
+                    trialContainer.classList.add('is-centered');
                     wordInputBox.disabled = false;
                     wordEntryForm.querySelector('button').disabled = false;
                 };

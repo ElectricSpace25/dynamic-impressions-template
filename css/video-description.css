@@ -4,25 +4,31 @@
 } */
 
 .trial-container {
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-.trial-subcontainer {
   display: grid;
   grid-template-columns: 50vw 35vw;
   grid-template-rows: auto;
+  justify-content: center;
   align-items: center;
+  min-height: 100vh;
+  box-sizing: border-box;
   gap: 3vw;
+  overflow: hidden;
+}
+ 
+/* Centers the response column */
+.trial-container.is-centered {
+  grid-template-columns: 1fr;
+  max-width: 35vw;
+  margin: 0 auto;
+}
+
+/* Removes the video column */
+.trial-container.is-centered > div:first-child {
+  display: none;
 }
 
 #instructions, .notice-text {
-  font-size: calc(12px + 1vh);
+  font-size: calc(18px + 0.25vh);
 }
 
 .notice-text {
@@ -44,7 +50,6 @@
 }
 
 .word-list {
-  width: 100%;
   max-width: 30vw;
   height: 12vw;
   border: 1px solid #ddd;
