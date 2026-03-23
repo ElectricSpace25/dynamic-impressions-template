@@ -1,6 +1,6 @@
 // Imports
 import { jsPsych } from './init.js';
-import { config} from './config.js';
+import { config } from './config.js';
 import * as utils from './utils.js';
 import * as content from './content.js';
 
@@ -16,12 +16,13 @@ async function loadDisruptions() {
 }
 await loadDisruptions();
 
+const startTime = new Date().toLocaleString()
+
 
 // --- Get Prolific ID from URL ---
 
 const urlParams = new URLSearchParams(window.location.search);
 const prolificID = urlParams.get('participant_id') || 'unknown';
-jsPsych.data.addProperties({ prolificID: prolificID });
 
 
 // --- Setup and preload videos/audio ---
@@ -52,7 +53,8 @@ const screenerTrial = {
             // TODO: Handle failed screening
             jsPsych.abortExperiment("You did not meet the eligibility requirements.");
         }
-    }
+    },
+    data: { trial_name: 'screener' }
 };
 
 
@@ -60,7 +62,8 @@ const screenerTrial = {
 
 const instructionsTrial = {
     type: jsPsychSurvey,
-    survey_json: content.instructionsContent
+    survey_json: content.instructionsContent,
+    data: { trial_name: 'instructions' }
 };
 
 
@@ -68,7 +71,8 @@ const instructionsTrial = {
 
 const audioCheckTrial = {
     type: jsPsychSurvey,
-    survey_json: content.audioCheckContent
+    survey_json: content.audioCheckContent,
+    data: { trial_name: 'audo_check' }
 };
 
 
@@ -81,17 +85,17 @@ const fullscreen = {
               <p>Do not exit fullscreen until the study is complete.<p>`
 }
 
-function checkFullscreen(){
+function checkFullscreen() {
     var reFullscreen = {
         type: jsPsychFullscreen,
         fullscreen_mode: true,
         message: `<p>Please do not exit fullscreen mode.</p><p>Click the button below to return to fullscreen mode.</p>`
     };
-    
+
     var fullscreenNode = {
         timeline: [reFullscreen],
-        conditional_function: function(){
-            if(!document.fullscreenElement){
+        conditional_function: function () {
+            if (!document.fullscreenElement) {
                 return true;
             } else {
                 return false;
@@ -121,7 +125,8 @@ const videoTrial = {
                 if (config.DEBUG_LOGS) console.log(`Disruption added: ${trial.break_start} to ${trial.break_end}`);
             }
         }
-    }
+    },
+    data: { trial_name: 'video' }
 };
 
 
@@ -129,7 +134,8 @@ const videoTrial = {
 
 const ratingTrial = {
     type: jsPsychSurvey,
-    survey_json: content.ratingContent
+    survey_json: content.ratingContent,
+    data: { trial_name: 'ratings' }
 };
 
 
@@ -137,12 +143,14 @@ const ratingTrial = {
 
 const demographicsTrial = {
     type: jsPsychSurvey,
-    survey_json: content.demographicsContent
+    survey_json: content.demographicsContent,
+    data: { trial_name: 'demographics' }
 };
 
 const finishedTrial = {
     type: jsPsychSurvey,
-    survey_json: content.finishedContent
+    survey_json: content.finishedContent,
+    data: { trial_name: 'info', prolific_id: prolificID, start_time: startTime, end_time: new Date().toLocaleString() }
 };
 
 
