@@ -188,7 +188,7 @@ var jsPsychVideoDescription = (function (jspsych) {
                     }
                 };
 
-                // Spacebar listener to al
+                // Spacebar listener to pause video
                 const spacebarListener = (event) => {
                     if (event.code === 'Space') {
                         event.preventDefault();
@@ -350,6 +350,7 @@ var jsPsychVideoDescription = (function (jspsych) {
                     }
                     if (response_state === 'final') {
                         // End the trial
+                        window.removeEventListener('keydown', spacebarListener);
                         let rt = Math.round(performance.now() - startTime);
                         const trial_data = {
                             response: descriptorsData,
