@@ -12,7 +12,7 @@ export function setupMedia() {
     for(let i = 0; i < videoLists.length; i++) {
         const originalList = videoLists[i].videos;
         let shuffledList = originalList;
-        if (videoLists[i].shuffle) shuffledList = jsPsych.randomization.shuffle(originalList);
+        if (videoLists[i].shuffle || config.SHUFFLE_ALL) shuffledList = jsPsych.randomization.shuffle(originalList);
         const selectionNum = videoLists[i].selectionNum;
         const conditionName = videoLists[i].condition;
 
