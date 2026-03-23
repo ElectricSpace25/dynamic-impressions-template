@@ -118,16 +118,11 @@ const videoTrial = {
 };
 
 
-// --- Rating and decision ---
+// --- Rating trial ---
 
 const ratingTrial = {
     type: jsPsychSurvey,
     survey_json: content.ratingContent
-};
-
-const decisionTrial = {
-    type: jsPsychSurvey,
-    survey_json: content.decisionContent
 };
 
 
@@ -157,8 +152,7 @@ const videoTimeline = {
     timeline: [
         checkFullscreen(),
         videoTrial,
-        ratingTrial,
-        decisionTrial
+        ratingTrial
     ],
     timeline_variables: videoTimelineVariables
 };

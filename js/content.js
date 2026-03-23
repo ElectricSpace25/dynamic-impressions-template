@@ -217,32 +217,47 @@ const traitSliders = traits.map(trait => ({
 }));
 
 export const ratingContent = {
-    title: 'Rating Impressions',
-    completeText: 'Submit',
-    elements:
-        [
-            {
-                type: 'html',
-                html: '<p>Rate the candidate in the video on the following parameters.</p>'
-            },
-            ...traitSliders
-        ]
-};
-
-// --- Decision ---
-export const decisionContent = {
-    title: 'Recruitment Decision',
-    completeText: 'Submit',
-    elements:
-        [
-            {
-                type: 'radiogroup',
-                name: 'interview',
-                title: 'Please decide whether to invite this candidate for an interview.',
-                choices: ['Invite for interview', 'Do not invite for interview'],
-                isRequired: true
-            }
-        ]
+    autoAdvanceEnabled: true,
+    pages: [
+        {
+            title: 'Rating Impressions',
+            elements:
+                [
+                    {
+                        type: 'html',
+                        html: '<p>Rate the candidate in the video on the following parameters.</p>'
+                    },
+                    ...traitSliders
+                ]
+        },
+        {
+            title: 'Recruitment Decision',
+            elements: [
+                {
+                    type: 'rating',
+                    name: 'interview',
+                    title: 'Please decide whether to invite this candidate for an interview.',
+                    autoGenerate: false,
+                    rateCount: 2,
+                    rateValues: [
+                        {
+                            value: '1',
+                            text: 'Invite for interview'
+                        },
+                        {
+                            value: '0',
+                            text: 'Do not invite for interview'
+                        }
+                    ],
+                    rateMax: 2,
+                    displayMode: 'buttons',
+                    isRequired: true
+                }
+            ],
+            showNavigationButtons: false
+        }
+    ],
+    
 };
 
 // --- Demographics ---
@@ -252,9 +267,10 @@ export const demographicsContent = {
     elements:
         [
             {
-                type: 'number',
+                type: 'text',
                 name: 'age',
                 title: 'What is your age?',
+                inputType: 'number',
                 isRequired: true
             },
             {
