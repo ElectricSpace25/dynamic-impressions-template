@@ -278,6 +278,7 @@ var jsPsychVideoDescription = (function (jspsych) {
                     // Enable input
                     trialContainer.classList.add('is-centered');
                     wordInputBox.disabled = false;
+                    wordInputBox.focus();
                     wordEntryForm.querySelector('button').disabled = false;
                 };
 
