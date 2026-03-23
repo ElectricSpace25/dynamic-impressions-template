@@ -17,6 +17,7 @@ async function loadDisruptions() {
 await loadDisruptions();
 
 const startTime = new Date().toLocaleString();
+export let complete = false;
 
 
 // --- Get Prolific ID from URL ---
@@ -50,8 +51,7 @@ const screenerTrial = {
     on_finish: function (data) {
         if (data.response.english == 'No' || data.response.attention_check != "Other") {
             // Not eligible
-            // TODO: Handle failed screening
-            jsPsych.abortExperiment("You did not meet the eligibility requirements.");
+            jsPsych.abortExperiment();
         }
     },
     data: { trial_name: 'screener' }
@@ -154,6 +154,7 @@ const finishedTrial = {
     on_finish: function (data) {
         // Can't add end_time with data: {} because it will calculate time at start
         data.end_time = new Date().toLocaleString();
+        complete = true;
     }
 };
 
