@@ -57,13 +57,14 @@ for file_path in files:
         # ratings.csv
         elif row["trial_name"] == "ratings":
             for trait in resp_json:
-                ratings_data.append({
-                    "subject_id": subject_id,
-                    "trait": trait,
-                    "value": resp_json[trait],
-                    "video": current_video,
-                    "rt": row["rt"]
-                })
+                if trait != 'instructions':
+                    ratings_data.append({
+                        "subject_id": subject_id,
+                        "trait": trait,
+                        "value": resp_json[trait],
+                        "video": current_video,
+                        "rt": row["rt"]
+                    })
         
         # demographics.csv
         elif row["trial_name"] == "demographics":
