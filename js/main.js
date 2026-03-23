@@ -16,7 +16,7 @@ async function loadDisruptions() {
 }
 await loadDisruptions();
 
-const startTime = new Date().toLocaleString()
+const startTime = new Date().toLocaleString();
 
 
 // --- Get Prolific ID from URL ---
@@ -150,7 +150,11 @@ const demographicsTrial = {
 const finishedTrial = {
     type: jsPsychSurvey,
     survey_json: content.finishedContent,
-    data: { trial_name: 'info', prolific_id: prolificID, start_time: startTime, end_time: new Date().toLocaleString() }
+    data: { trial_name: 'info', prolific_id: prolificID, start_time: startTime},
+    on_finish: function (data) {
+        // Can't add end_time with data: {} because it will calculate time at start
+        data.end_time = new Date().toLocaleString();
+    }
 };
 
 
@@ -169,6 +173,8 @@ const videoTimeline = {
 
 timeline.push(videoTimeline);
 
-if (!config.DEBUG_QUICK) timeline.push(demographicsTrial, finishedTrial);
+if (!config.DEBUG_QUICK) timeline.push(demographicsTrial);
+
+timeline.push(finishedTrial);
 
 jsPsych.run(timeline);
