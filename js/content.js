@@ -6,7 +6,8 @@ export const screenerContent = {
         [
             {
                 type: 'html',
-                html: '<p>Please answer the following questions to determine your eligibility.</p>'
+                name: 'instructions',
+                html: '<p>Please answer the following questions to determine your eligibility.</p>',
             },
             {
                 type: 'radiogroup',
@@ -219,6 +220,7 @@ export const ratingContent = {
                 [
                     {
                         type: 'html',
+                        name: 'instructions',
                         html: '<p>Rate the candidate in the video on the following parameters.</p>'
                     },
                     ...traitSliders
