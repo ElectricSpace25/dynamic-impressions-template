@@ -17,6 +17,13 @@ async function loadDisruptions() {
 await loadDisruptions();
 
 
+// --- Get Prolific ID from URL ---
+
+const urlParams = new URLSearchParams(window.location.search);
+const prolificID = urlParams.get('participant_id') || 'unknown';
+jsPsych.data.addProperties({ prolificID: prolificID });
+
+
 // --- Setup and preload videos/audio ---
 
 const videoTimelineVariables = utils.setupMedia()

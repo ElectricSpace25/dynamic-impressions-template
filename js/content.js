@@ -9,12 +9,6 @@ export const screenerContent = {
                 html: '<p>Please answer the following questions to determine your eligibility.</p>'
             },
             {
-                type: 'text',
-                name: 'prolific_id',
-                title: 'Please enter your Prolific ID accurately.',
-                isRequired: true
-            },
-            {
                 type: 'radiogroup',
                 name: "english",
                 title: 'Are you fluent in English?',
