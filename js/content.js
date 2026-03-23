@@ -170,7 +170,7 @@ export const audioCheckContent = {
     ]
 };
 
-// --- Trait Rating ---
+// --- Rating Impressions ---
 const traits = [
     { name: "openness", title: "Open to new experiences" },
     { name: "conscientiousness", title: "Conscientious" },
@@ -257,58 +257,59 @@ export const ratingContent = {
             showNavigationButtons: false
         }
     ],
-    
+
 };
 
 // --- Demographics ---
 export const demographicsContent = {
-    title: 'Demographics',
-    completeText: 'Submit',
-    elements:
-        [
-            {
-                type: 'text',
-                name: 'age',
-                title: 'What is your age?',
-                inputType: 'number',
-                isRequired: true
-            },
-            {
-                type: 'checkbox',
-                name: 'gender',
-                title: 'What gender do you identify with? (Select all that apply)',
-                choices: ['Male', 'Female', 'Transgender', 'Non-binary', 'Not otherwise specified', 'I do not wish to provide this information'],
-                isRequired: true
-            },
-            {
-                type: 'checkbox',
-                name: 'race',
-                title: 'What race/ethnicity do you identify with? (Select all that apply)',
-                choices: ['American Indian or Alaska Native', 'Asian', 'Black or African-American', 'Native Hawaiian or Other Pacific Islander', 'White', 'Latino', 'Other'],
-                isRequired: true
-            },
-            {
-                type: 'radiogroup',
-                name: 'education',
-                title: 'What is the highest level of education you have received?',
-                choices: ['Less than High School', 'High School Diploma', 'Some College', 'Associate\'s Degree', 'Bachelor\'s Degree', 'Some Graduate School', 'Master\'s Degree', 'Doctoral Degree'],
-                isRequired: true
-            }
-        ]
-};
-
-// --- Feedback ---
-export const feedbackContent = {
-    title: 'Feedback',
-    completeText: 'Submit',
-    elements:
-        [
-            {
-                type: 'comment',
-                name: 'feedback',
-                title: 'Please let us know if any part of the study was confusing, unclear, or in need of improvement. We appreciate your feedback greatly!',
-            }
-        ]
+    pages: [
+        {
+            title: 'Demographics',
+            elements:
+                [
+                    {
+                        type: 'text',
+                        name: 'age',
+                        title: 'What is your age?',
+                        inputType: 'number',
+                        isRequired: true
+                    },
+                    {
+                        type: 'checkbox',
+                        name: 'gender',
+                        title: 'What gender do you identify with? (Select all that apply)',
+                        choices: ['Male', 'Female', 'Transgender', 'Non-binary', 'Not otherwise specified', 'I do not wish to provide this information'],
+                        isRequired: true
+                    },
+                    {
+                        type: 'checkbox',
+                        name: 'race',
+                        title: 'What race/ethnicity do you identify with? (Select all that apply)',
+                        choices: ['American Indian or Alaska Native', 'Asian', 'Black or African-American', 'Native Hawaiian or Other Pacific Islander', 'White', 'Latino', 'Other'],
+                        isRequired: true
+                    },
+                    {
+                        type: 'radiogroup',
+                        name: 'education',
+                        title: 'What is the highest level of education you have received?',
+                        choices: ['Less than High School', 'High School Diploma', 'Some College', 'Associate\'s Degree', 'Bachelor\'s Degree', 'Some Graduate School', 'Master\'s Degree', 'Doctoral Degree'],
+                        isRequired: true
+                    }
+                ]
+        },
+        {
+            title: 'Feedback',
+            completeText: 'Submit',
+            elements:
+                [
+                    {
+                        type: 'comment',
+                        name: 'feedback',
+                        title: 'Please let us know if any part of the study was confusing, unclear, or in need of improvement. We appreciate your feedback greatly!',
+                    }
+                ]
+        }
+    ]
 };
 
 // --- Finished ---

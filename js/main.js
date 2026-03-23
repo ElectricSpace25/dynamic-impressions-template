@@ -133,11 +133,6 @@ const demographicsTrial = {
     survey_json: content.demographicsContent
 };
 
-const feedbackTrial = {
-    type: jsPsychSurvey,
-    survey_json: content.feedbackContent
-};
-
 const finishedTrial = {
     type: jsPsychSurvey,
     survey_json: content.finishedContent
@@ -159,6 +154,6 @@ const videoTimeline = {
 
 timeline.push(videoTimeline);
 
-if (!config.DEBUG_QUICK) timeline.push(demographicsTrial, feedbackTrial, finishedTrial);
+if (!config.DEBUG_QUICK) timeline.push(demographicsTrial, finishedTrial);
 
 jsPsych.run(timeline);
