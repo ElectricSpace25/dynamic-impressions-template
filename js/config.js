@@ -10,9 +10,9 @@ export const config = {
     // When enabled, shuffles the order of the video lists
     SHUFFLE_LIST_ORDER: false,
 
-    // When enabled, assumes video lists contain alternate versions of the same videos
+    // When enabled, ensures that if a participant sees a video from List A, they won't see the corresponding version at the same index in List B (or any other list)
     // See README for more information
-    ALTERNATE_VIDEOS: true,
+    EXCLUSIVE_INDEX_MODE: true,
 
     // When enabled, logs debug messages to console
     DEBUG_LOGS: false,
@@ -27,7 +27,7 @@ export const config = {
 export const videoLists = [
     // {
     //     condition: "test",
-    //     selectionNum: 2,
+    //     selectionNum: 1,
     //     shuffle: false,
     //     videos: [
     //         "Placeholder10.mp4",

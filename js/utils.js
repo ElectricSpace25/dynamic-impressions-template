@@ -4,7 +4,7 @@ import { config, videoLists } from './config.js';
 // Function to build filepaths for videos and create stimuli video list
 export function setupMedia() {
     if (config.DEBUG_LOGS) console.log("Setting up videos");
-    if (config.DEBUG_LOGS) console.log(`Alternate mode: ${config.ALTERNATE_VIDEOS}`);
+    if (config.DEBUG_LOGS) console.log(`Exclusive Index Mode: ${config.EXCLUSIVE_INDEX_MODE}`);
 
     let videoIndices = new Set();
     let videoTimelineVariableLists = [];
@@ -16,7 +16,7 @@ export function setupMedia() {
         const selectionNum = videoLists[i].selectionNum;
         const conditionName = videoLists[i].condition;
 
-        if (config.ALTERNATE_VIDEOS && videoIndices.size > 0) {
+        if (config.EXCLUSIVE_INDEX_MODE && videoIndices.size > 0) {
             shuffledList = shuffledList.filter(video => {
                 const index = originalList.indexOf(video);
                 return !videoIndices.has(index);
