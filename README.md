@@ -1,45 +1,69 @@
 # Dynamic Impressions jsPsych Template
 
-[Insert ReadMe stuff]
+This is a template for a jsPsych study for researching dynamic impression formation. It features a plugin that allows participants to pause a video and write multiple single world responses.
 
-# Data
+[README under construction]
+
+# Data Cleanup
+
+A Python cleanup script (`cleanup.py`) is included in this repository. It will read **ALL** CSV files in the `data` folder and create 4 files:
+
+### words.csv
+| subject_id | word | timestamp | response_state | video | video_id | condition |
+| :-- | :-- | :-- | :-- | :-- | :-- | :-- | 
+| mn3q7bp9pj73o6npr7 | happy | 26.862329 | during | v1.mp4 | 0 | control | 
+
+### ratings.csv
+| subject_id | trait | value | video | rt |
+| :-- | :-- | :-- | :-- | :-- |
+| mn3q7bp9pj73o6npr7 | warmth | 6 | v1.mp4 | 10940.0 |
+
+### demographics.csv
+| subject_id | age | gender | race | education | feedback |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| mn3q7bp9pj73o6npr7 | 22 | Female | White | Bachelor's Degree | Great study! |
+
+### id_key.csv
+| subject_id | prolific_id | start_time | end_time |
+| :-- | :-- | :-- | :-- |
+| mn3q7bp9pj73o6npr7 | 000 | 3/24/2026, 5:54:30 PM | 3/24/2026, 6:37:19 PM |
 
 
-# Alternate Video Mode
+# Exclusive Index Mode
 
-Let's say you have 4 videos, but you also have an alternate version of each of those same videos. You want the participant to see 2 of the videos in their original form and 2 of the videos in their altered form. 
+When Exclusive Index Mode is set to `true` in `config.js`, the program ensures that a participant never sees more than one version of the same video.
 
-If you just made a list of control videos and a list of altered videos, the participant might see the same video in both its original and altered form. To prevent this, you can enable `ALTERNATE_VIDEOS` in `config.js`.
+Let's say you have a set of original videos and a set of "disrupted" versions.
 
-This will prevent participants from seeing videos with the same index across different lists. For example, if a participant saw the third video in the first list, they will not see the third video in the second list.
-
-Here is an example:
 ```js
 export const videoLists = [
     {
         condition: "control",
         selectionNum: 2,
+        shuffle: true,
         videos: [
-            "v1.mp4",
-            "v2.mp4",
-            "v3.mp4",
-            "v4.mp4"
+            "v1.mp4", // Index 0
+            "v2.mp4", // Index 1
+            "v3.mp4", // Index 2
+            "v4.mp4"  // Index 3
         ]
     },
     {
-        condition: "altered",
+        condition: "disrupted",
         selectionNum: 2,
+        shuffle: true,
         videos: [
-            "v1a.mp4",
-            "v2a.mp4",
-            "v3a.mp4",
-            "v4a.mp4"
+            "v1_disrupted.mp4", // Index 0
+            "v2_disrupted.mp4", // Index 1
+            "v3_disrupted.mp4", // Index 2
+            "v4_disrupted.mp4"  // Index 3
         ]
     },
 ];
 ``` 
-If alternate video mode was not enabled, the program would simply choose 2 random videos from the control list and 2 random videos from the altered list, not caring about overlap.
 
-With alternate video mode enabled, the program will first randomly choose 2 videos from the control list, then will choose 2 videos from the altered list that don't match the indices already chosen. For example, it could chose [v1, v3, v2a, v4a] but it would never chose [v1, v3, v1a, v4a] because that would include two versions of v1. The final list of chosen videos will be shuffled before shown to the participant.
+A standard random selection might pick both `v1.mp4` and `v1_disrupted.mp4`, showing the participant two versions of the same video.
 
-If using alternate video mode, **all lists must be the same length and in the same order**.
+Exclusive Index Mode treats the position (index) of a video as its unique ID. If the program selects `v1.mp4`, it automatically excludes index 0 for all other lists, making it impossible to pick `v1_disrupted.mp4`.
+
+For Exclusive Index Mode to function properly, **all lists must be the same length and in the same order**. Every video must have a counterpart with the same index in every other list.
