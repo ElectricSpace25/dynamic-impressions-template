@@ -43,6 +43,37 @@ timeline.push({
 });
 
 
+// --- Safari Warning ---
+
+const browserCheck = {
+    type: jsPsychBrowserCheck,
+    features: ["browser"]
+}
+
+// Traps the user on a warning message if using Safari (which does not support fullscreen)
+function checkSafari() {
+    var safariWarning = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: `<p>You cannot use Safari to participate in this study.</p>
+                   <p>Please re-open the study in Chrome or Firefox.</p>`,
+        choices: []
+    };
+
+    var browserCheck = {
+        timeline: [safariWarning],
+        conditional_function: function () {
+            var browser = jsPsych.data.get().last(1).values()[0].browser;
+            if (browser == 'safari') {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+    return browserCheck;
+};
+
+
 // --- Screener ---
 
 const screenerTrial = {
@@ -150,7 +181,7 @@ const demographicsTrial = {
 const finishedTrial = {
     type: jsPsychSurvey,
     survey_json: content.finishedContent,
-    data: { trial_name: 'info', prolific_id: prolificID, start_time: startTime},
+    data: { trial_name: 'info', prolific_id: prolificID, start_time: startTime },
     on_finish: function (data) {
         // Can't add end_time with data: {} because it will calculate time at start
         data.end_time = new Date().toLocaleString();
@@ -161,7 +192,7 @@ const finishedTrial = {
 
 // --- Main timeline ---
 
-if (!config.DEBUG_QUICK) timeline.push(screenerTrial, instructionsTrial, audioCheckTrial, fullscreen);
+if (!config.DEBUG_QUICK) timeline.push(browserCheck, checkSafari(), screenerTrial, instructionsTrial, audioCheckTrial, fullscreen);
 
 const videoTimeline = {
     timeline: [
