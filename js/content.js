@@ -1,7 +1,6 @@
 // --- Screener ---
 export const screenerContent = {
     title: 'Welcome to the experiment!',
-    showQuestionNumbers: false,
     elements:
         [
             {
@@ -40,12 +39,14 @@ export const instructionsContent = {
                         <p>Thank you for participating in our experiment!</p>
                         <p>We are researchers interested in how we understand other people in professional settings.</p>
                         <p>Your job today is simple. <b>There are four parts to our task.</b></p>
-                        <ol>
-                            <li>View professional video introductions and write down impressions of the speaker.</li>
-                            <li>Form a final impression of the speaker in the video.</li>
-                            <li>Rate the job candidate on several attributes.</li>
-                            <li>Decide whether to offer the job candidate an interview at the company.</li>
-                        </ol>
+                        <div class="callout-box">
+                            <ol class="bold-numbers">
+                                <li>View professional video introductions and write down impressions of the speaker.</li>
+                                <li>Form a final impression of the speaker in the video.</li>
+                                <li>Rate the job candidate on several attributes.</li>
+                                <li>Decide whether to offer the job candidate an interview at the company.</li>
+                            </ol>
+                        </div>
                         <p>You will repeat these steps for each video.</p>
                         <p>Today, you will take on the role of a professional recruiter. A set of companies (i.e., your clients) have tasked you with reviewing professional video introductions by job candidates. While viewing each video, you should form impressions about the person. Once you have watched the video and formed your impressions, you will make a decision about whether or not the candidate should be offered an interview at the company they applied to.</p>
                         <p>In the next few panels, you will learn more about each step of the experiment.</p>
@@ -89,19 +90,21 @@ export const instructionsContent = {
                         <video width="100%" autoplay loop muted src="assets/video/instruct/rating.mp4"></video>
                         <p>Once you finish watching the video, you will rate the candidate in the video on several attributes using a slider. <strong>Please go with your gut feelings, and don't overthink it.</strong> You will be evaluating the candidate on these attributes:</p>
                         <p><b>Please read the category descriptions carefully below:</b></p>
-                        <ul class="instructions-list">
-                            <li><b>Openness to new experiences:</b> willingness to try new things and to explore new ideas</li>
-                            <li><b>Conscientiousness:</b> extent to which the candidate seems organized, hardworking, and goal-oriented</li>
-                            <li><b>Extroversion:</b> extent to which the candidate seems energized by social interaction and enjoys being around other people</li>
-                            <li><b>Agreeableness:</b> extent to which the candidate seems cooperative, kind, and trusting</li>
-                            <li><b>Neuroticism:</b> extent to which the candidate seems prone to negative emotions such as anxiety, anger, and sadness</li>
-                            <li><b>Warmth:</b> extent to which the candidate seems friendly, approachable, and likeable</li>
-                            <li><b>Competence:</b> extent to which the candidate seems capable, skilled, and knowledgeable</li>
-                            <li><b>Confidence:</b> extent to which the candidate displays self-assurance, decisiveness, and belief in their own abilities</li>
-                            <li><b>Leadership capacity:</b> extent to which the candidate seems like someone who can guide, inspire, and manage others effectively</li>
-                            <li><b>Ambitiousness:</b> extent to which the candidate displays a strong desire for achievement, advancement, and success</li>
-                            <li><b>Trustworthiness:</b> extent to which the candidate is seems reliable, honest, and dependable in their actions and communications</li>
-                        </ul>
+                        <div class="callout-box">
+                            <ul>
+                                <li><b>Openness to new experiences:</b> willingness to try new things and to explore new ideas</li>
+                                <li><b>Conscientiousness:</b> extent to which the candidate seems organized, hardworking, and goal-oriented</li>
+                                <li><b>Extroversion:</b> extent to which the candidate seems energized by social interaction and enjoys being around other people</li>
+                                <li><b>Agreeableness:</b> extent to which the candidate seems cooperative, kind, and trusting</li>
+                                <li><b>Neuroticism:</b> extent to which the candidate seems prone to negative emotions such as anxiety, anger, and sadness</li>
+                                <li><b>Warmth:</b> extent to which the candidate seems friendly, approachable, and likeable</li>
+                                <li><b>Competence:</b> extent to which the candidate seems capable, skilled, and knowledgeable</li>
+                                <li><b>Confidence:</b> extent to which the candidate displays self-assurance, decisiveness, and belief in their own abilities</li>
+                                <li><b>Leadership capacity:</b> extent to which the candidate seems like someone who can guide, inspire, and manage others effectively</li>
+                                <li><b>Ambitiousness:</b> extent to which the candidate displays a strong desire for achievement, advancement, and success</li>
+                                <li><b>Trustworthiness:</b> extent to which the candidate is seems reliable, honest, and dependable in their actions and communications</li>
+                            </ul>
+                        </div>
                     `
                 }
             ]
@@ -126,7 +129,9 @@ export const instructionsContent = {
                 {
                     type: 'html',
                     html: `
-                        <p>Some of the videos may briefly pause and display a black screen due to technical issues during recording or uploading. If this occurs, simply wait for the video to resume and continue with the task as usual. When the video continues, you may keep watching and pausing to describe the person in the video as you have been doing.</p>
+                        <p>Some of the videos may briefly pause and display a black screen due to technical issues during recording or uploading.
+                        If this occurs, simply wait for the video to resume and continue with the task as usual.
+                        When the video continues, you may keep watching and pausing to describe the person in the video as you have been doing.</p>
                     `
                 }
             ]
