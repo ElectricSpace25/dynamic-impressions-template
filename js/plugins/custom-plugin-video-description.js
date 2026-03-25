@@ -50,10 +50,10 @@ var jsPsychVideoDescription = (function (jspsych) {
                 pretty_name: "Repeat Word Notice Text",
                 default: "You cannot add a word already in the list.",
             },
-            video_error_text: {
+            final_impressions_text: {
                 type: jspsych.ParameterType.HTML_STRING,
-                pretty_name: "Video Error Text",
-                default: "<p>Error: Could not load video. Please inform the experimenter.</p>",
+                pretty_name: "Final Impressions Text",
+                default: "Please add any final words that you feel describe this candidate. You must include at least two.",
             },
             break_start: {
                 type: jspsych.ParameterType.FLOAT,
@@ -273,7 +273,7 @@ var jsPsychVideoDescription = (function (jspsych) {
                     videoPlayer.style.display = 'none';
                     videoNotice.style.display = 'none';
                     instructions.style.display = 'block';
-                    instructions.textContent = 'Please add any final words that you feel describe this candidate. You must include at least two.'
+                    instructions.textContent = trial.final_impressions_text;
 
                     // Enable input
                     trialContainer.classList.add('is-centered');
