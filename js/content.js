@@ -129,9 +129,9 @@ export const instructionsContent = {
                 {
                     type: 'html',
                     html: `
-                        <p>Some of the videos may briefly pause and display a black screen due to technical issues during recording or uploading.
-                        If this occurs, simply wait for the video to resume and continue with the task as usual.
-                        When the video continues, you may keep watching and pausing to describe the person in the video as you have been doing.</p>
+                        <p>Some of the videos may briefly pause and display a black screen due to technical issues during recording or uploading.</p>
+                        <p>If this occurs, simply wait for the video to resume and continue with the task as usual.</p>
+                        <p>When the video continues, you may keep watching and pausing to describe the person in the video as you have been doing.</p>
                     `
                 }
             ]

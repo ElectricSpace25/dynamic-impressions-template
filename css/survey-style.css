@@ -21,10 +21,10 @@
     justify-content: center;
 }
 
-/* Make next and prev buttons the same size */
+/* Make navigation buttons the same size */
 /* TODO: a more flexible fix */
 .sd-body__navigation .sd-btn {
-    min-width: 200px;
+    width: 200px;
 }
 
 /* Numbered list with bold numbers */
