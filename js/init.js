@@ -19,12 +19,12 @@ export const jsPsych = initJsPsych({
                 jsPsych.data.get().localSave("csv", "data.csv");
             } else {
                 saveData(`data-${sessionId}`, jsPsych.data.get().csv());
+                jsPsych.abortExperiment("You will be redirected to Prolific shortly!");
+                setTimeout(() => {
+                    // Completion code
+                    window.location.href = "https://app.prolific.co/submissions/complete?cc=C1HROM6I";
+                }, 2000);
             }
-            jsPsych.abortExperiment("You will be redirected to Prolific shortly!");
-            setTimeout(() => {
-                // Completion code
-                window.location.href = "https://app.prolific.co/submissions/complete?cc=C1HROM6I";
-            }, 2000);
         } else {
             jsPsych.abortExperiment("<p>Sorry, you are not eligible for the study.</p><p>You will be redirected to Prolific shortly.</p>");
             setTimeout(() => {
