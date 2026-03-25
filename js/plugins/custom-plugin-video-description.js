@@ -33,7 +33,7 @@ var jsPsychVideoDescription = (function (jspsych) {
             default_notice_text: {
                 type: jspsych.ParameterType.HTML_STRING,
                 pretty_name: "Pause Notice Text",
-                default: "Click anywhere on the video to pause and make an entry.",
+                default: "Click on the video or press space to pause and make an entry",
             },
             too_early_notice_text: {
                 type: jspsych.ParameterType.HTML_STRING,
@@ -66,6 +66,18 @@ var jsPsychVideoDescription = (function (jspsych) {
                 pretty_name: "Break End Time (Seconds)",
                 default: null,
                 description: "Time in seconds when the disruption ends."
+            },
+            demo: {
+                type: jspsych.ParameterType.BOOL,
+                pretty_name: "Demo",
+                default: false,
+                description: "If true, enable demo mode"
+            },
+            demo_text: {
+                type: jspsych.ParameterType.STRING,
+                pretty_name: "Demo Text",
+                default: "<p>This is a looping demo video</p><p>Click the video or press the spacebar to pause</p><p>Practice adding words on the right</p><p>Click submit to end the demo</p>",
+                description: "Text to display on the video when in demo mode"
             },
             debug_logs: {
                 type: jspsych.ParameterType.BOOL,
@@ -125,13 +137,20 @@ var jsPsychVideoDescription = (function (jspsych) {
 
         async trial(display_element, trial) {
             return new Promise((resolve) => {
-                var startTime = performance.now();
+                const startTime = performance.now();
+                const loop = trial.demo ? 'loop' : '';
+                const demo_text = trial.demo ? trial.demo_text : '';
 
                 // Set up HTML
                 display_element.innerHTML = `
                 <div class="trial-container">
                     <div>
-                        <video class="video-player" oncontextmenu="return false;"></video>
+                        <div class="video-container">
+                            <video class="video-player" oncontextmenu="return false;" ${loop}></video>
+                            <div class="video-overlay">
+                                ${demo_text}
+                            </div>
+                        </div>
                         <div>
                             <h3 id="video-notice" class="notice-text notice-text--warn">${trial.paused_notice_text}</h3>
                         </div>
@@ -264,7 +283,11 @@ var jsPsychVideoDescription = (function (jspsych) {
                 }
 
                 // Set initial state
-                changeState('paused');
+                if (trial.demo) {
+                    changeState('playing');
+                } else {
+                    changeState('paused');
+                }
 
                 // On video end, hide video and request final 2+ words
                 videoPlayer.onended = () => {
@@ -346,10 +369,14 @@ var jsPsychVideoDescription = (function (jspsych) {
                     currentTerms = [];
                     wordList.innerHTML = '';
                     wordInputBox.value = '';
+                    if (trial.demo) {
+                        // End the demo trial
+                        resolve();
+                    }
                     if (response_state === 'initial') {
                         response_state = 'during';
                     }
-                    if (response_state === 'final') {
+                    else if (response_state === 'final') {
                         // End the trial
                         window.removeEventListener('keydown', spacebarListener);
                         let rt = Math.round(performance.now() - startTime);
@@ -358,11 +385,9 @@ var jsPsychVideoDescription = (function (jspsych) {
                             rt: rt
                         };
                         resolve(trial_data);
-                    } else {
-                        changeState('playing');
                     }
+                    changeState('playing');
                 };
-
             });
         }
     }

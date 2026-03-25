@@ -136,6 +136,16 @@ function checkFullscreen() {
     return fullscreenNode;
 }
 
+// --- Demo trial ---
+
+const demoTrial = {
+    type: jsPsychVideoDescription,
+    demo: true,
+    video_path: 'assets/video/demo.mp4',
+    debug_logs: config.DEBUG_LOGS,
+    data: { trial_name: 'demo' }
+}
+
 
 // --- Video trial ---
 
@@ -192,7 +202,7 @@ const finishedTrial = {
 
 // --- Main timeline ---
 
-if (!config.DEBUG_QUICK) timeline.push(browserCheck, checkSafari(), screenerTrial, instructionsTrial, audioCheckTrial, fullscreen);
+if (!config.DEBUG_QUICK) timeline.push(browserCheck, checkSafari(), screenerTrial, instructionsTrial, audioCheckTrial, fullscreen, demoTrial);
 
 const videoTimeline = {
     timeline: [
