@@ -21,15 +21,15 @@
     justify-content: center;
 }
 
-/* Make navigation buttons the same size */
-/* TODO: a more flexible fix */
+/* Make next and prev buttons the same size */
+/* TODO: fix this better */
 .sd-body__navigation .sd-btn {
-    width: 200px;
+    min-width: 200px;
 }
 
 /* Numbered list with bold numbers */
 ol.bold-numbers > li::marker {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 /* Callout box that matches the style of a SurveyJS panel. Useful for highlighting instructions. */
