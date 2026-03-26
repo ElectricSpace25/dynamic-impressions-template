@@ -1,5 +1,5 @@
-import { jsPsych } from './init.js';
-import { config, videoLists } from './config.js';
+import { jsPsych } from "./init.js";
+import { config, videoLists } from "./config.js";
 
 // Function to build filepaths for videos and create stimuli video list
 export function setupMedia() {

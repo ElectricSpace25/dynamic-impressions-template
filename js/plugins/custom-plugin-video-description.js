@@ -33,7 +33,7 @@ var jsPsychVideoDescription = (function (jspsych) {
             default_notice_text: {
                 type: jspsych.ParameterType.HTML_STRING,
                 pretty_name: "Pause Notice Text",
-                default: "Click on the video or press space to pause and make an entry",
+                default: "Click on the video or press space to pause and make an entry.",
             },
             too_early_notice_text: {
                 type: jspsych.ParameterType.HTML_STRING,
@@ -58,7 +58,7 @@ var jsPsychVideoDescription = (function (jspsych) {
             break_start: {
                 type: jspsych.ParameterType.FLOAT,
                 pretty_name: "Break Start Time (Seconds)",
-                default: null, // If null, no disruption logic runs
+                default: null,
                 description: "Time in seconds when the disruption starts."
             },
             break_end: {
@@ -71,19 +71,19 @@ var jsPsychVideoDescription = (function (jspsych) {
                 type: jspsych.ParameterType.BOOL,
                 pretty_name: "Demo",
                 default: false,
-                description: "If true, enable demo mode"
+                description: "If true, enable demo mode."
             },
             demo_text: {
                 type: jspsych.ParameterType.STRING,
                 pretty_name: "Demo Text",
                 default: "<p>This is a looping demo video</p><p>Click the video or press the spacebar to pause</p><p>Practice adding words on the right</p><p>Click submit to end the demo</p>",
-                description: "Text to display on the video when in demo mode"
+                description: "Text to display on the video when in demo mode."
             },
             debug_logs: {
                 type: jspsych.ParameterType.BOOL,
                 pretty_name: "Debug Logs",
                 default: false,
-                description: "If true, display prints useful for debugging"
+                description: "If true, display prints useful for debugging."
             }
         },
         data: {
@@ -100,9 +100,9 @@ var jsPsychVideoDescription = (function (jspsych) {
                         type: jspsych.ParameterType.FLOAT
                     },
                     /* When the word was entered
-                       - 'inital' - before playing the video
-                       - 'during' - during the video
-                       - 'final' - after the video ended */
+                       - "inital" - before playing the video
+                       - "during" - during the video
+                       - "final" - after the video ended */
                     response_state: {
                         type: jspsych.ParameterType.STRING
                     },
@@ -138,8 +138,8 @@ var jsPsychVideoDescription = (function (jspsych) {
         async trial(display_element, trial) {
             return new Promise((resolve) => {
                 const startTime = performance.now();
-                const loop = trial.demo ? 'loop' : '';
-                const demo_text = trial.demo ? trial.demo_text : '';
+                const loop = trial.demo ? "loop" : "";
+                const demo_text = trial.demo ? trial.demo_text : "";
 
                 // Set up HTML
                 display_element.innerHTML = `
@@ -169,49 +169,49 @@ var jsPsychVideoDescription = (function (jspsych) {
                 </div>`;
 
                 // Set up video
-                const videoPlayer = display_element.querySelector('.video-player');
+                const videoPlayer = display_element.querySelector(".video-player");
                 videoPlayer.src = `${trial.video_path}`;
-                videoPlayer.removeAttribute('controls'); //TODO: Is this necessary??
+                videoPlayer.removeAttribute("controls"); //TODO: Is this necessary??
 
                 // Get elements
-                const trialContainer = document.querySelector('.trial-container');
-                const wordInputBox = display_element.querySelector('.word-input-box');
-                const wordEntryForm = display_element.querySelector('.word-entry-form');
-                const submitBtn = display_element.querySelector('#submit-btn');
-                const wordList = display_element.querySelector('.word-list');
-                const repeatWordNotice = display_element.querySelector('#repeat-word-notice');
-                const videoNotice = display_element.querySelector('#video-notice');
-                const instructions = display_element.querySelector('#instructions')
+                const trialContainer = document.querySelector(".trial-container");
+                const wordInputBox = display_element.querySelector(".word-input-box");
+                const wordEntryForm = display_element.querySelector(".word-entry-form");
+                const submitBtn = display_element.querySelector("#submit-btn");
+                const wordList = display_element.querySelector(".word-list");
+                const repeatWordNotice = display_element.querySelector("#repeat-word-notice");
+                const videoNotice = display_element.querySelector("#video-notice");
+                const instructions = display_element.querySelector("#instructions")
 
                 let descriptorsData = [];
                 let currentTerms = [];
                 let lastPauseTime = -2;
                 let isDisrupted = false;
-                let response_state = 'initial'; // initial, during, final
+                let response_state = "initial"; // initial, during, final
 
                 // Helper function to update video notice text
                 const updateNotice = (type) => {
                     switch (type) {
-                        case 'playing':
+                        case "playing":
                             videoNotice.textContent = trial.default_notice_text;
-                            videoNotice.className = 'notice-text';
+                            videoNotice.className = "notice-text";
                             break;
-                        case 'paused':
+                        case "paused":
                             videoNotice.textContent = trial.paused_notice_text;
-                            videoNotice.className = 'notice-text notice-text--warn';
+                            videoNotice.className = "notice-text notice-text--warn";
                             break;
-                        case 'early':
+                        case "early":
                             videoNotice.textContent = trial.too_early_notice_text;
-                            videoNotice.className = 'notice-text notice-text--warn';
+                            videoNotice.className = "notice-text notice-text--warn";
                             break;
                     }
                 };
 
                 // Spacebar listener to pause video
                 const spacebarListener = (event) => {
-                    if (event.code === 'Space') {
+                    if (event.code === "Space") {
                         event.preventDefault();
-                        if (document.activeElement.tagName === 'INPUT') return;
+                        if (document.activeElement.tagName === "INPUT") return;
                         pauseVideo();
                     }
                 };
@@ -222,61 +222,61 @@ var jsPsychVideoDescription = (function (jspsych) {
                         return;
                     } else if (videoPlayer.currentTime - lastPauseTime <= 2) {
                         // Don't pause if too early
-                        updateNotice('early');
+                        updateNotice("early");
                         // last_pause_time = video_player.currentTime;
                         setTimeout(() => {
-                            updateNotice('playing');
+                            updateNotice("playing");
                         }, 1500);
                         return;
                     } else {
                         // Change to paused state
-                        changeState('paused');
+                        changeState("paused");
                     }
                 };
 
                 const changeState = (state) => {
                     switch (state) {
-                        case 'playing':
+                        case "playing":
                             // Change notice
-                            updateNotice('playing');
+                            updateNotice("playing");
 
                             // Disable input
                             wordInputBox.disabled = true;
-                            wordEntryForm.querySelector('button').disabled = true;
+                            wordEntryForm.querySelector("button").disabled = true;
                             submitBtn.disabled = true;
 
                             // Hide instructions
-                            instructions.style.display = 'none';
-                            repeatWordNotice.style.display = 'none';
+                            instructions.style.display = "none";
+                            repeatWordNotice.style.display = "none";
 
                             // Play video and set cursor to pointer
                             videoPlayer.play();
-                            videoPlayer.style.cursor = 'pointer';
+                            videoPlayer.style.cursor = "pointer";
 
                             // Clicking video or pressing spacebar pauses
                             videoPlayer.onclick = () => { pauseVideo(); };
-                            window.addEventListener('keydown', spacebarListener);
+                            window.addEventListener("keydown", spacebarListener);
 
                             break;
-                        case 'paused':
+                        case "paused":
                             // Change notice
-                            updateNotice('paused');
+                            updateNotice("paused");
 
                             // Enable and focus input
                             wordInputBox.disabled = false;
-                            wordEntryForm.querySelector('button').disabled = false;
+                            wordEntryForm.querySelector("button").disabled = false;
                             wordInputBox.focus();
 
                             // Show instructions
-                            instructions.style.display = 'block';
+                            instructions.style.display = "block";
 
                             // Pause video and set cursor to not allowed
                             videoPlayer.pause();
-                            videoPlayer.style.cursor = 'not-allowed';
+                            videoPlayer.style.cursor = "not-allowed";
 
                             // Clicking video or pressing spacebar does nothing
                             videoPlayer.onclick = null;
-                            window.removeEventListener('keydown', spacebarListener);
+                            window.removeEventListener("keydown", spacebarListener);
 
                             break;
                     }
@@ -284,25 +284,25 @@ var jsPsychVideoDescription = (function (jspsych) {
 
                 // Set initial state
                 if (trial.demo) {
-                    changeState('playing');
+                    changeState("playing");
                 } else {
-                    changeState('paused');
+                    changeState("paused");
                 }
 
                 // On video end, hide video and request final 2+ words
                 videoPlayer.onended = () => {
-                    response_state = 'final';
+                    response_state = "final";
 
-                    videoPlayer.style.display = 'none';
-                    videoNotice.style.display = 'none';
-                    instructions.style.display = 'block';
+                    videoPlayer.style.display = "none";
+                    videoNotice.style.display = "none";
+                    instructions.style.display = "block";
                     instructions.textContent = trial.final_impressions_text;
 
                     // Enable input
-                    trialContainer.classList.add('is-centered');
+                    trialContainer.classList.add("is-centered");
                     wordInputBox.disabled = false;
                     wordInputBox.focus();
-                    wordEntryForm.querySelector('button').disabled = false;
+                    wordEntryForm.querySelector("button").disabled = false;
                 };
 
                 videoPlayer.ontimeupdate = () => {
@@ -322,31 +322,31 @@ var jsPsychVideoDescription = (function (jspsych) {
                 wordEntryForm.onsubmit = (e) => {
                     e.preventDefault();
                     const newWord = wordInputBox.value.trim();
-                    if (newWord === '') return;
+                    if (newWord === "") return;
                     if (currentTerms.includes(newWord)) {
-                        repeatWordNotice.style.display = 'block';
+                        repeatWordNotice.style.display = "block";
                         return;
                     }
-                    repeatWordNotice.style.display = 'none';
+                    repeatWordNotice.style.display = "none";
                     currentTerms.push(newWord);
-                    const listItem = document.createElement('div');
-                    listItem.className = 'word-list-item';
+                    const listItem = document.createElement("div");
+                    listItem.className = "word-list-item";
                     listItem.innerText = newWord;
-                    const deleteBtn = document.createElement('button');
-                    deleteBtn.innerText = 'x';
-                    deleteBtn.className = 'delete-btn'
+                    const deleteBtn = document.createElement("button");
+                    deleteBtn.innerText = "x";
+                    deleteBtn.className = "delete-btn"
                     deleteBtn.onclick = function () {
                         currentTerms = currentTerms.filter(word => word !== newWord);
                         listItem.remove();
-                        if (currentTerms.length === 0 || (response_state === 'final' && currentTerms.length < 2)) {
+                        if (currentTerms.length === 0 || (response_state === "final" && currentTerms.length < 2)) {
                             submitBtn.disabled = true;
                         }
                     };
                     listItem.appendChild(deleteBtn);
                     wordList.appendChild(listItem);
                     wordList.scrollTop = wordList.scrollHeight;
-                    wordInputBox.value = '';
-                    if (response_state === 'final') {
+                    wordInputBox.value = "";
+                    if (response_state === "final") {
                         submitBtn.disabled = currentTerms.length < 2;
                     } else {
                         submitBtn.disabled = false;
@@ -367,18 +367,18 @@ var jsPsychVideoDescription = (function (jspsych) {
                     }));
                     descriptorsData = descriptorsData.concat(newData);
                     currentTerms = [];
-                    wordList.innerHTML = '';
-                    wordInputBox.value = '';
+                    wordList.innerHTML = "";
+                    wordInputBox.value = "";
                     if (trial.demo) {
                         // End the demo trial
                         resolve();
                     }
-                    if (response_state === 'initial') {
-                        response_state = 'during';
+                    if (response_state === "initial") {
+                        response_state = "during";
                     }
-                    else if (response_state === 'final') {
+                    else if (response_state === "final") {
                         // End the trial
-                        window.removeEventListener('keydown', spacebarListener);
+                        window.removeEventListener("keydown", spacebarListener);
                         let rt = Math.round(performance.now() - startTime);
                         const trial_data = {
                             response: descriptorsData,
@@ -386,7 +386,7 @@ var jsPsychVideoDescription = (function (jspsych) {
                         };
                         resolve(trial_data);
                     }
-                    changeState('playing');
+                    changeState("playing");
                 };
             });
         }

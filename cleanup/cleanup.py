@@ -57,7 +57,7 @@ for file_path in files:
         # ratings.csv
         elif row["trial_name"] == "ratings":
             for trait in resp_json:
-                if trait != 'instructions':
+                if trait != "instructions":
                     ratings_data.append({
                         "subject_id": subject_id,
                         "trait": trait,

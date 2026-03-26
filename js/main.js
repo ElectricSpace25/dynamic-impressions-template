@@ -1,13 +1,13 @@
 // Imports
-import { jsPsych } from './init.js';
-import { config } from './config.js';
-import * as utils from './utils.js';
-import * as content from './content.js';
+import { jsPsych } from "./init.js";
+import { config } from "./config.js";
+import * as utils from "./utils.js";
+import * as content from "./content.js";
 
 let disruptionLookup;
 async function loadDisruptions() {
     try {
-        const module = await import('./disruptions.js');
+        const module = await import("./disruptions.js");
         disruptionLookup = module.disruptionLookup;
     } catch (error) {
         if (config.DEBUG_LOGS) console.warn("disruptions.js not found");
@@ -23,15 +23,15 @@ export let complete = false;
 // --- Get Prolific ID from URL ---
 
 const urlParams = new URLSearchParams(window.location.search);
-const prolificID = urlParams.get('participant_id') || 'unknown';
+const prolificID = urlParams.get("participant_id") || "unknown";
 
 
 // --- Setup and preload videos/audio ---
 
-const videoTimelineVariables = utils.setupMedia()
+const videoTimelineVariables = utils.setupMedia();
 const videoPaths = videoTimelineVariables.map(t => t.video_path);
 if (config.DEBUG_LOGS) {
-    console.log('Final video timeline variables:')
+    console.log("Final video timeline variables:");
     console.log(videoTimelineVariables);
 }
 
@@ -63,7 +63,7 @@ function checkSafari() {
         timeline: [safariWarning],
         conditional_function: function () {
             var browser = jsPsych.data.get().last(1).values()[0].browser;
-            if (browser == 'safari') {
+            if (browser == "safari") {
                 return true;
             } else {
                 return false;
@@ -80,12 +80,12 @@ const screenerTrial = {
     type: jsPsychSurvey,
     survey_json: content.screenerContent,
     on_finish: function (data) {
-        if (data.response.english == 'No' || data.response.attention_check != "Other") {
+        if (data.response.english == "No" || data.response.attention_check != "Other") {
             // Not eligible
             jsPsych.abortExperiment();
         }
     },
-    data: { trial_name: 'screener' }
+    data: { trial_name: "screener" }
 };
 
 
@@ -94,7 +94,7 @@ const screenerTrial = {
 const instructionsTrial = {
     type: jsPsychSurvey,
     survey_json: content.instructionsContent,
-    data: { trial_name: 'instructions' }
+    data: { trial_name: "instructions" }
 };
 
 
@@ -103,7 +103,7 @@ const instructionsTrial = {
 const audioCheckTrial = {
     type: jsPsychSurvey,
     survey_json: content.audioCheckContent,
-    data: { trial_name: 'audo_check' }
+    data: { trial_name: "audio_check" }
 };
 
 
@@ -120,7 +120,8 @@ function checkFullscreen() {
     var reFullscreen = {
         type: jsPsychFullscreen,
         fullscreen_mode: true,
-        message: `<p>Please do not exit fullscreen mode.</p><p>Click the button below to return to fullscreen mode.</p>`
+        message: `<p>Please do not exit fullscreen mode.</p>
+                  <p>Click the button below to return to fullscreen mode.</p>`
     };
 
     var fullscreenNode = {
@@ -141,9 +142,9 @@ function checkFullscreen() {
 const demoTrial = {
     type: jsPsychVideoDescription,
     demo: true,
-    video_path: 'assets/video/demo.mp4',
+    video_path: "assets/video/demo.mp4",
     debug_logs: config.DEBUG_LOGS,
-    data: { trial_name: 'demo' }
+    data: { trial_name: "demo" }
 }
 
 
@@ -151,15 +152,15 @@ const demoTrial = {
 
 const videoTrial = {
     type: jsPsychVideoDescription,
-    video_path: jsPsych.timelineVariable('video_path'),
-    video_name: jsPsych.timelineVariable('video_name'),
-    video_id: jsPsych.timelineVariable('video_id'),
-    condition: jsPsych.timelineVariable('condition'),
+    video_path: jsPsych.timelineVariable("video_path"),
+    video_name: jsPsych.timelineVariable("video_name"),
+    video_id: jsPsych.timelineVariable("video_id"),
+    condition: jsPsych.timelineVariable("condition"),
     debug_logs: config.DEBUG_LOGS,
     on_start: function (trial) {
         // Parses disruption time if possible
         if (disruptionLookup != null) {
-            const entry = disruptionLookup[trial.video_name.split('/').pop()];
+            const entry = disruptionLookup[trial.video_name.split("/").pop()];
             if (entry) {
                 trial.break_start = utils.parseTimeCode(entry.start);
                 trial.break_end = utils.parseTimeCode(entry.end);
@@ -167,7 +168,7 @@ const videoTrial = {
             }
         }
     },
-    data: { trial_name: 'video' }
+    data: { trial_name: "video" }
 };
 
 
@@ -176,7 +177,7 @@ const videoTrial = {
 const ratingTrial = {
     type: jsPsychSurvey,
     survey_json: content.ratingContent,
-    data: { trial_name: 'ratings' }
+    data: { trial_name: "ratings" }
 };
 
 
@@ -185,13 +186,13 @@ const ratingTrial = {
 const demographicsTrial = {
     type: jsPsychSurvey,
     survey_json: content.demographicsContent,
-    data: { trial_name: 'demographics' }
+    data: { trial_name: "demographics" }
 };
 
 const finishedTrial = {
     type: jsPsychSurvey,
     survey_json: content.finishedContent,
-    data: { trial_name: 'info', prolific_id: prolificID, start_time: startTime },
+    data: { trial_name: "info", prolific_id: prolificID, start_time: startTime },
     on_finish: function (data) {
         // Can't add end_time with data: {} because it will calculate time at start
         data.end_time = new Date().toLocaleString();
