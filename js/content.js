@@ -88,7 +88,7 @@ export const instructionsContent = {
                     type: "html",
                     html: `
                         <video width="100%" autoplay loop muted src="assets/video/instruct/rating.mp4"></video>
-                        <p>Once you finish watching the video, you will rate the candidate in the video on several attributes using a slider. <strong>Please go with your gut feelings, and don't overthink it.</strong> You will be evaluating the candidate on these attributes:</p>
+                        <p>Once you finish watching the video, you will rate the candidate in the video on several attributes using a slider. <b>Please go with your gut feelings, and don't overthink it.</b> You will be evaluating the candidate on these attributes:</p>
                         <p><b>Please read the category descriptions carefully below:</b></p>
                         <div class="callout-box">
                             <ul>
