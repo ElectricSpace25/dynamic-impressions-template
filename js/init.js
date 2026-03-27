@@ -2,7 +2,7 @@ import { config } from "./config.js";
 import { complete } from "./main.js";
 
 
-const sessionId = Date.now().toString(36) + Math.random().toString(36).substring(2);
+const sessionId = Math.random().toString(36).substring(2) + Date.now().toString(36);
 
 // Function to save data to server
 function saveData(id, data) {
@@ -16,7 +16,7 @@ export const jsPsych = initJsPsych({
     on_finish: function () {
         if (complete) {
             if (config.DEBUG_SAVE) {
-                jsPsych.data.get().localSave("csv", "data.csv");
+                jsPsych.data.get().localSave("csv", `data-${sessionId}.csv`);
             } else {
                 saveData(`data-${sessionId}`, jsPsych.data.get().csv());
                 jsPsych.abortExperiment("You will be redirected to Prolific shortly!");
