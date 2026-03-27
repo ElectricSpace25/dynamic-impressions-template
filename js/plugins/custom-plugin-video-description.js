@@ -7,53 +7,70 @@ var jsPsychVideoDescription = (function (jspsych) {
         parameters: {
             video_path: {
                 type: jspsych.ParameterType.VIDEO,
-                pretty_name: "Video",
+                pretty_name: "Video Path",
                 default: undefined,
+                description: "The full path to the video."
             },
             video_name: {
                 type: jspsych.ParameterType.STRING,
                 pretty_name: "Video Name",
                 default: null,
+                description: "The name of the video to be saved in the data output."
             },
             video_id: {
                 type: jspsych.ParameterType.INT,
                 pretty_name: "Video ID",
                 default: null,
+                description: "The index of the video within its list (only relevant for Exclusive Index Mode)."
             },
             condition: {
                 type: jspsych.ParameterType.STRING,
                 pretty_name: "Condition",
                 default: null,
+                description: "The condition associated with the video."
             },
             instruction_text: {
                 type: jspsych.ParameterType.HTML_STRING,
                 pretty_name: "Instruction Text",
                 default: "Enter one word at a time, using as many words as would be helpful.",
+                description: "Text displayed under the word list when the video is paused."
             },
             default_notice_text: {
                 type: jspsych.ParameterType.HTML_STRING,
                 pretty_name: "Pause Notice Text",
                 default: "Click on the video or press space to pause and make an entry.",
+                description: "Text displayed under the video when the video is playing."
+
+            },
+            paused_notice_text: {
+                type: jspsych.ParameterType.HTML_STRING,
+                pretty_name: "Paused Notice Text",
+                default: "You cannot unpause until you submit your list of words.",
+                description: "Text displayed under the video when the video is paused."
             },
             too_early_notice_text: {
                 type: jspsych.ParameterType.HTML_STRING,
                 pretty_name: "Too Early Notice Text",
                 default: "Please wait slightly longer before pausing again.",
-            },
-            paused_notice_text: {
-                type: jspsych.ParameterType.HTML_STRING,
-                pretty_name: "Cannot Unpause Notice Text",
-                default: "You cannot unpause until you submit your list of words.",
+                description: "Text displayed under the video when trying to pause before the pause cooldown has passed."
             },
             repeat_word_notice_text: {
                 type: jspsych.ParameterType.HTML_STRING,
                 pretty_name: "Repeat Word Notice Text",
                 default: "You cannot add a word already in the list.",
+                description: "Text displayed under the word entry form upon entering a repeat word."
             },
             final_impressions_text: {
                 type: jspsych.ParameterType.HTML_STRING,
                 pretty_name: "Final Impressions Text",
                 default: "Please add any final words that you feel describe this candidate. You must include at least two.",
+                description: "Text displayed below the word list after the video ended."
+            },
+            pause_cooldown: {
+                type: jspsych.ParameterType.INT,
+                pretty_name: "Pause Cooldown",
+                default: 2000,
+                description: "Duration in milliseconds before the video can be paused again after resuming."
             },
             break_start: {
                 type: jspsych.ParameterType.FLOAT,
@@ -76,7 +93,7 @@ var jsPsychVideoDescription = (function (jspsych) {
             demo_text: {
                 type: jspsych.ParameterType.STRING,
                 pretty_name: "Demo Text",
-                default: "<p>This is a looping demo video</p><p>Click the video or press the spacebar to pause</p><p>Practice adding words on the right</p><p>Click submit to end the demo</p>",
+                default: "<p>Before we start, let's do a practice trial</p><p>Please pause the video and practice entering words</p><p>The study will begin after this practice trial</p>",
                 description: "Text to display on the video when in demo mode."
             },
             debug_logs: {
