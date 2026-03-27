@@ -4,6 +4,7 @@ import { config } from "./config.js";
 import * as utils from "./utils.js";
 import * as content from "./content.js";
 
+// Import disruptions.js if it exists
 let disruptionLookup;
 async function loadDisruptions() {
     try {
@@ -16,50 +17,34 @@ async function loadDisruptions() {
 }
 await loadDisruptions();
 
-const startTime = new Date().toLocaleString();
-export let complete = false;
-
+const startTime = new Date().toLocaleString(); // Records the date and time at the start of the study
+export let complete = false; // This is set to true at the end of the study to indicate completion and 
+const timeline = []; // Creates the experiment timeline
 
 // --- Get Prolific ID from URL ---
 
 const urlParams = new URLSearchParams(window.location.search);
-const prolificID = urlParams.get("participant_id") || "unknown";
-
-
-// --- Setup and preload videos/audio ---
-
-const videoTimelineVariables = utils.setupMedia();
-const videoPaths = videoTimelineVariables.map(t => t.video_path);
-if (config.DEBUG_LOGS) {
-    console.log("Final video timeline variables:");
-    console.log(videoTimelineVariables);
-}
-
-const timeline = [];
-timeline.push({
-    type: jsPsychPreload,
-    video: [...videoPaths],
-    message: "Please wait while we load the study.",
-});
+const prolificID = urlParams.get("participant_id") || "unknown"; // If no Prolific ID is provided in the URL, the ID will be reported as 'unknown'
 
 
 // --- Safari Warning ---
 
 const browserCheck = {
     type: jsPsychBrowserCheck,
-    features: ["browser"]
+    features: ["browser"],
+    data: { trial_name: "browser_check" }
 }
 
 // Traps the user on a warning message if using Safari (which does not support fullscreen)
 function checkSafari() {
-    var safariWarning = {
+    const safariWarning = {
         type: jsPsychHtmlButtonResponse,
         stimulus: `<p>You cannot use Safari to participate in this study.</p>
                    <p>Please re-open the study in Chrome or Firefox.</p>`,
         choices: []
     };
 
-    var browserCheck = {
+    const checkSafariNode = {
         timeline: [safariWarning],
         conditional_function: function () {
             var browser = jsPsych.data.get().last(1).values()[0].browser;
@@ -70,8 +55,27 @@ function checkSafari() {
             }
         }
     }
-    return browserCheck;
+    return checkSafariNode;
 };
+
+
+// --- Setup and preload videos/audio ---
+
+// Get list of videos to show the participant, as provided by utils.js
+const videoTimelineVariables = utils.setupMedia();
+const videoPaths = videoTimelineVariables.map(t => t.video_path);
+if (config.DEBUG_LOGS) {
+    console.log("Final video timeline variables:");
+    console.log(videoTimelineVariables);
+}
+
+// Preload the videos to prevent loading time during video trials
+const preloadVideos = {
+    type: jsPsychPreload,
+    video: [...videoPaths],
+    message: "Please wait while we load the study.",
+    data: { trial_name: "preload" }
+}
 
 
 // --- Screener ---
@@ -81,7 +85,7 @@ const screenerTrial = {
     survey_json: content.screenerContent,
     on_finish: function (data) {
         if (data.response.english == "No" || data.response.attention_check != "Other") {
-            // Not eligible
+            // Attention/Language check failed -> study will terminate with a failure code and no data saved
             jsPsych.abortExperiment();
         }
     },
@@ -113,18 +117,22 @@ const fullscreen = {
     type: jsPsychFullscreen,
     fullscreen_mode: true,
     message: `<p>The experiment will switch to full screen mode when you press the button below.</p>
-              <p>Do not exit fullscreen until the study is complete.<p>`
+              <p>Do not exit fullscreen until the study is complete.<p>`,
+    button_label: "Continue",
+    data: { trial_name: "fullscreen" }
 }
 
 function checkFullscreen() {
-    var reFullscreen = {
+    const reFullscreen = {
         type: jsPsychFullscreen,
         fullscreen_mode: true,
         message: `<p>Please do not exit fullscreen mode.</p>
-                  <p>Click the button below to return to fullscreen mode.</p>`
+                  <p>Click the button below to return to fullscreen mode.</p>`,
+        button_label: "Continue",
+        data: { trial_name: "re-fullscreen" }
     };
 
-    var fullscreenNode = {
+    const checkFullscreenNode = {
         timeline: [reFullscreen],
         conditional_function: function () {
             if (!document.fullscreenElement) {
@@ -134,7 +142,7 @@ function checkFullscreen() {
             }
         }
     }
-    return fullscreenNode;
+    return checkFullscreenNode;
 }
 
 // --- Demo trial ---
@@ -143,9 +151,17 @@ const demoTrial = {
     type: jsPsychVideoDescription,
     demo: true,
     video_path: "assets/video/demo.mp4",
+    demo_text: "<p>Before we start, let's do a practice trial</p><p>Please pause the video and practice entering words</p><p>The study will begin after this practice trial</p>",
     debug_logs: config.DEBUG_LOGS,
     data: { trial_name: "demo" }
-}
+};
+
+const startMessageTrial = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: "Press continue to begin the experiment.",
+    choices: ["Continue"],
+    data: { trial_name: "start_message" }
+};
 
 
 // --- Video trial ---
@@ -189,6 +205,8 @@ const demographicsTrial = {
     data: { trial_name: "demographics" }
 };
 
+// This is a critical trial that indicates study completion, prompting the data to be saved
+// It also saves the Prolific ID and start/end time
 const finishedTrial = {
     type: jsPsychSurvey,
     survey_json: content.finishedContent,
@@ -197,13 +215,12 @@ const finishedTrial = {
         // Can't add end_time with data: {} because it will calculate time at start
         data.end_time = new Date().toLocaleString();
         complete = true;
-    }
+    },
+    data: { trial_name: "finished" }
 };
 
 
 // --- Main timeline ---
-
-if (!config.DEBUG_QUICK) timeline.push(browserCheck, checkSafari(), screenerTrial, instructionsTrial, audioCheckTrial, fullscreen, demoTrial);
 
 const videoTimeline = {
     timeline: [
@@ -214,10 +231,19 @@ const videoTimeline = {
     timeline_variables: videoTimelineVariables
 };
 
-timeline.push(videoTimeline);
-
-if (!config.DEBUG_QUICK) timeline.push(demographicsTrial);
-
-timeline.push(finishedTrial);
+timeline.push(
+    browserCheck,
+    checkSafari(),
+    preloadVideos,
+    screenerTrial,
+    instructionsTrial,
+    audioCheckTrial,
+    fullscreen,
+    demoTrial,
+    startMessageTrial,
+    videoTimeline,
+    demographicsTrial,
+    finishedTrial
+);
 
 jsPsych.run(timeline);
