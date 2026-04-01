@@ -11,19 +11,19 @@ export const config = {
     SHUFFLE_LIST_ORDER: false,
 
     // When enabled, ensures that if a participant sees a video from List A, they won't see the corresponding version at the same index in List B (or any other list)
-    // See README for more information
+    // See the wiki for more information
     EXCLUSIVE_INDEX_MODE: false,
 
     // Message shown to participants before redirection upon successful completion of the study
     COMPLETION_MESSAGE: "You will be redirected to Prolific shortly!",
     
-    // Link participants will be redirected to upon successful completion of the study
+    // Link participants are redirected to 2 seconds after seeing the completion message
     COMPLETION_LINK: "https://app.prolific.co/submissions/complete?cc=????????",
 
-    // Message shown to participants before redirection upon being kicked out of the study
+    // Message shown to participants before redirection upon early termination of the study
     FAILURE_MESSAGE: "<p>Sorry, you are not eligible for the study.</p><p>You will be redirected to Prolific shortly.</p>",
 
-    // Link participants will be redirected to upon being kicked out of the study
+    // Link participants are redirected to 2 seconds after seeing the failure message
     FAILURE_LINK: "https://app.prolific.co/submissions/complete?cc=????????",
 
     // When enabled, logs debug messages to console
