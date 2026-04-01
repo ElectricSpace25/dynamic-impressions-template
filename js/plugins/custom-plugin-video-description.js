@@ -40,7 +40,6 @@ var jsPsychVideoDescription = (function (jspsych) {
                 pretty_name: "Pause Notice Text",
                 default: "Click on the video or press space to pause and make an entry.",
                 description: "Text displayed under the video when the video is playing."
-
             },
             paused_notice_text: {
                 type: jspsych.ParameterType.HTML_STRING,
