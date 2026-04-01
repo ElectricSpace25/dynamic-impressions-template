@@ -66,6 +66,12 @@ var jsPsychVideoDescription = (function (jspsych) {
                 default: "Please add any final words that you feel describe this person. You must include at least two.",
                 description: "Text displayed below the word list after the video ended."
             },
+            input_placeholder_text: {
+                type: jspsych.ParameterType.HTML_STRING,
+                pretty_name: "Input Placeholder Text",
+                default: "e.g. 'happy', 'trustworthy'",
+                description: "Gray text displayed inside the textbox when empty. Should provide examples of what to type. Cannot contain double quotes."
+            },
             pause_cooldown: {
                 type: jspsych.ParameterType.INT,
                 pretty_name: "Pause Cooldown",
@@ -178,7 +184,7 @@ var jsPsychVideoDescription = (function (jspsych) {
                         <h4 id="instructions">${trial.instruction_text}</h4>
                         <h4 id="repeat-word-notice" class="notice-text notice-text--warn" style="display: none;">${trial.repeat_word_notice_text}</h4>
                         <form class="word-entry-form">
-                            <input type="text" class="word-input-box" placeholder="e.g. 'happy', 'trustworthy'" autocomplete="off" onkeydown="return /[a-z\-]/i.test(event.key)" maxlength="19" disabled>
+                            <input type="text" class="word-input-box" placeholder="${trial.input_placeholder_text}" autocomplete="off" onkeydown="return /[a-z\-]/i.test(event.key)" maxlength="19" disabled>
                             <button type="submit" class="jspsych-btn add-word-btn" disabled>+</button>
                         </form>
                         <button id="submit-btn" class="jspsych-btn" disabled>Submit Word List</button>
