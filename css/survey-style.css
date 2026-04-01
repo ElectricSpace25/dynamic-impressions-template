@@ -35,7 +35,6 @@ ol.bold-numbers > li::marker {
 /* Callout box that matches the style of a SurveyJS panel. Useful for highlighting instructions. */
 .callout-box {
     display: flex;
-    justify-content: center;
     border-radius: var(--sjs-questionpanel-cornerRadius, var(--sjs-corner-radius, 4px));
     box-sizing: border-box;
     padding: 1.5rem;
