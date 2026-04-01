@@ -63,7 +63,7 @@ var jsPsychVideoDescription = (function (jspsych) {
             final_impressions_text: {
                 type: jspsych.ParameterType.HTML_STRING,
                 pretty_name: "Final Impressions Text",
-                default: "Please add any final words that you feel describe this candidate. You must include at least two.",
+                default: "Please add any final words that you feel describe this person. You must include at least two.",
                 description: "Text displayed below the word list after the video ended."
             },
             pause_cooldown: {
