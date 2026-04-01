@@ -150,7 +150,7 @@ function checkFullscreen() {
 const demoTrial = {
     type: jsPsychVideoDescription,
     demo: true,
-    video_path: "assets/video/demo.mp4",
+    video_path: "assets/stimuli/demo.mp4",
     demo_text: "<p>Before we start, let's do a practice trial</p><p>Please pause the video and practice entering words</p><p>The study will begin after this practice trial</p>",
     debug_logs: config.DEBUG_LOGS,
     data: { trial_name: "demo" }

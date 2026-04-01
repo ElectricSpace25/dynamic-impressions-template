@@ -58,7 +58,7 @@ export const instructionsContent = {
                 {
                     type: "html",
                     html: `
-                        <video width="100%" autoplay loop muted src="assets/video/instruct/submitting.mp4"></video>
+                        <video width="100%" autoplay loop muted src="assets/instruct/submitting.mp4"></video>
                         <p>Pause the video whenever you <b>notice a new characteristic</b> about the person or think of a <b>new way to describe them.</b> Pause by clicking anywhere on the video or pressing the spacebar.</p>
                         <p><b>Enter one word at a time</b>, but you can enter multiple words each time you pause (see video). For example, if you feel like the person is being an annoying student, pause and enter “annoying” and “student” separately. Order does not matter. You can remove words before submitting by clicking the "X" next to the word.</p>
                         <p>Enter whatever comes to mind spontaneously. There are no limits on what you enter! We only ask that you <b>pause and describe the person multiple times.</b></p>
@@ -73,7 +73,7 @@ export const instructionsContent = {
                 {
                     type: "html",
                     html: `
-                        <video width="100%" autoplay loop muted src="assets/video/instruct/final.mp4"></video>
+                        <video width="100%" autoplay loop muted src="assets/instruct/final.mp4"></video>
                         <p>Form your final impression of the speaker. <b>Think of this as a list of words you'd use to describe this person to someone else, your summary impression of a person.</b> Once again, enter one word at a time, for as many words as you"d like.</p>
                     `
                 }
@@ -85,7 +85,7 @@ export const instructionsContent = {
                 {
                     type: "html",
                     html: `
-                        <video width="100%" autoplay loop muted src="assets/video/instruct/rating.mp4"></video>
+                        <video width="100%" autoplay loop muted src="assets/instruct/rating.mp4"></video>
                         <p>Once you finish watching the video, you will rate the speaker in the video on several attributes using sliders. <b>Please go with your gut feelings, and don't overthink it.</b> You will be evaluating the speaker on these attributes:</p>
                         <p><b>Please read the category descriptions carefully below:</b></p>
                         <div class="callout-box">
