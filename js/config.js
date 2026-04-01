@@ -1,7 +1,7 @@
 export const config = {
 
     // Video stimuli filepath
-    VIDEO_PATH: "assets/videos/stimuli",
+    VIDEO_PATH: "assets/stimuli",
 
     // When enabled, shuffles order of all videos
     // Note: this overrides ALL other shuffle parameters
@@ -13,6 +13,18 @@ export const config = {
     // When enabled, ensures that if a participant sees a video from List A, they won't see the corresponding version at the same index in List B (or any other list)
     // See README for more information
     EXCLUSIVE_INDEX_MODE: false,
+
+    // Message shown to participants before redirection upon successful completion of the study
+    COMPLETION_MESSAGE: "You will be redirected to Prolific shortly!",
+    
+    // Link participants will be redirected to upon successful completion of the study
+    COMPLETION_LINK: "https://app.prolific.co/submissions/complete?cc=????????",
+
+    // Message shown to participants before redirection upon being kicked out of the study
+    FAILURE_MESSAGE: "<p>Sorry, you are not eligible for the study.</p><p>You will be redirected to Prolific shortly.</p>",
+
+    // Link participants will be redirected to upon being kicked out of the study
+    FAILURE_LINK: "https://app.prolific.co/submissions/complete?cc=????????",
 
     // When enabled, logs debug messages to console
     DEBUG_LOGS: false,
@@ -27,9 +39,7 @@ export const videoLists = [
         selectionNum: 3, // How many videos to select from this list
         shuffle: false, // Whether to shuffle the order of the videos or not (overriden by SHUFFLE_ALL)
         videos: [
-            "video1.mp4",
-            "video2.mp4",
-            "video3.mp4"
+            "placeholder.mp4",
         ]
     }
 ];

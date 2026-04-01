@@ -1,7 +1,6 @@
 import { config } from "./config.js";
 import { complete } from "./main.js";
 
-
 const sessionId = Math.random().toString(36).substring(2) + Date.now().toString(36);
 
 // Function to save data to server
@@ -19,17 +18,15 @@ export const jsPsych = initJsPsych({
                 jsPsych.data.get().localSave("csv", `data-${sessionId}.csv`);
             } else {
                 saveData(`data-${sessionId}`, jsPsych.data.get().csv());
-                jsPsych.abortExperiment("You will be redirected to Prolific shortly!");
+                jsPsych.abortExperiment(config.COMPLETION_MESSAGE);
                 setTimeout(() => {
-                    // Completion code
-                    window.location.href = "https://app.prolific.co/submissions/complete?cc=C1HROM6I";
+                    window.location.href = config.COMPLETION_LINK;
                 }, 2000);
             }
         } else {
-            jsPsych.abortExperiment("<p>Sorry, you are not eligible for the study.</p><p>You will be redirected to Prolific shortly.</p>");
+            jsPsych.abortExperiment(config.FAILURE_MESSAGE);
             setTimeout(() => {
-                // Failure code
-                window.location.href = "https://app.prolific.co/submissions/complete?cc=FAILURE";
+                window.location.href = config.FAILURE_LINK;
             }, 2000);
         }
     }
