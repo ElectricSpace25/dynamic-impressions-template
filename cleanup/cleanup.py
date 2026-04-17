@@ -27,6 +27,8 @@ for file_path in files:
     current_video = None
     
     for _, row in df.iterrows():
+        trial_name = row["trial_name"]
+
         # Clean the response string (handle NaN and empty)
         resp_str = str(row["response"]).strip()
         if not resp_str or resp_str == "nan":
@@ -40,7 +42,7 @@ for file_path in files:
             continue
 
         # words.csv
-        if row["trial_name"] == "video":
+        if trial_name == "video":
             for entry in resp_json:
                 words_data.append({
                     "subject_id": subject_id,
@@ -55,7 +57,7 @@ for file_path in files:
                 current_video = entry.get("video")
 
         # ratings.csv
-        elif row["trial_name"] == "ratings":
+        elif trial_name == "ratings":
             for trait in resp_json:
                 if trait != "instructions":
                     ratings_data.append({
@@ -67,7 +69,7 @@ for file_path in files:
                     })
         
         # demographics.csv
-        elif row["trial_name"] == "demographics":
+        elif trial_name == "demographics":
             demographics_data.append({
                 "subject_id": subject_id,
                 "age": resp_json.get("age"),
@@ -78,7 +80,7 @@ for file_path in files:
             })
 
         # id_key.csv
-        elif row["trial_name"] == "info":
+        elif trial_name == "info":
             id_key_data.append({
                 "subject_id": subject_id,
                 "prolific_id": row["prolific_id"],
