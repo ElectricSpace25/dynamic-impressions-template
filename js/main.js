@@ -234,7 +234,7 @@ timeline.push(
     browserCheck,
     checkSafari(),
     preloadVideos,
-    // screenerTrial,
+    screenerTrial,
     instructionsTrial,
     audioCheckTrial,
     fullscreen,
