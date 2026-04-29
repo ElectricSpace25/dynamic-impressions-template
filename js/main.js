@@ -18,7 +18,7 @@ async function loadDisruptions() {
 await loadDisruptions();
 
 const startTime = new Date().toLocaleString(); // Records the date and time at the start of the study
-export let complete = false; // This is set to true at the end of the study to indicate completion and 
+export let complete = false; // This is set to true at the end of the study to indicate completion 
 const timeline = []; // Creates the experiment timeline
 
 // --- Get Prolific ID from URL ---
